@@ -53,7 +53,11 @@
     <UnityVersion>2020.3.24f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
+    <Compile Include="Assets\Scripts\Consts.cs" />
+    <Compile Include="Assets\Scripts\PlayerAnimationController.cs" />
+    <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\PlayerStates.cs" />
+    <Compile Include="Assets\Scripts\PlayerStateController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
