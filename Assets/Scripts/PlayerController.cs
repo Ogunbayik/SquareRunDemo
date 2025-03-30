@@ -35,23 +35,67 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
             isRunning = !isRunning;
 
-
         Movement();
+        SetStates();
+    }
 
-
+    private void SetStates()
+    {
         var currentState = stateController.GetCurrentState();
         var movementDirection = GetMovementDirectionNormalized();
 
-        var newState = currentState switch
+        switch (currentState)
         {
-            _ when movementDirection == Vector3.zero => PlayerStates.Idle,
-            _ when movementDirection != Vector3.zero && !isRunning => PlayerStates.Walking,
-            _ when movementDirection != Vector3.zero && isRunning => PlayerStates.Running,
-            _ => currentState
-        };
+            case PlayerStates.Idle:
+                afkTimer -= Time.deltaTime;
+                if (afkTimer <= 0)
+                {
+                    animationController.ActivateSadAnimation(true);
+                    afkTimer = 0;
+                }
 
-        if (currentState != newState)
-            stateController.ChangeState(newState);
+                if (movementDirection != Vector3.zero && !isRunning)
+                {
+                    stateController.ChangeState(PlayerStates.Walking);
+                    animationController.ActivateWalkAnimation(true);
+                }
+                else if (movementDirection != Vector3.zero && isRunning)
+                {
+                    stateController.ChangeState(PlayerStates.Running);
+                    animationController.ActivateRunAnimation(true);
+                    animationController.ActivateWalkAnimation(true);
+                }
+                break;
+            case PlayerStates.Walking:
+                ResetSadAnimation();
+
+                if (movementDirection != Vector3.zero && isRunning)
+                {
+                    stateController.ChangeState(PlayerStates.Running);
+                    animationController.ActivateRunAnimation(true);
+                }
+                else if (movementDirection == Vector3.zero)
+                {
+                    stateController.ChangeState(PlayerStates.Idle);
+                    animationController.ActivateWalkAnimation(false);
+                }
+                break;
+            case PlayerStates.Running:
+                ResetSadAnimation();
+
+                if (movementDirection != Vector3.zero && !isRunning)
+                {
+                    stateController.ChangeState(PlayerStates.Walking);
+                    animationController.ActivateRunAnimation(false);
+                }
+                else if (movementDirection == Vector3.zero)
+                {
+                    stateController.ChangeState(PlayerStates.Idle);
+                    animationController.ActivateRunAnimation(false);
+                    animationController.ActivateWalkAnimation(false);
+                }
+                break;
+        }
     }
 
     private void Movement()
@@ -61,19 +105,25 @@ public class PlayerController : MonoBehaviour
 
         movementDirection = new Vector3(horizontalInput, 0f, verticalInput);
 
-        if (movementDirection != Vector3.zero && !isRunning)
+        var movementSpeed = stateController.GetCurrentState() switch
         {
-            playerRb.velocity = movementDirection.normalized * walkSpeed;
-        }
-        else if (movementDirection != Vector3.zero && isRunning)
-        {
-            playerRb.velocity = movementDirection.normalized * runSpeed;
-        }
+            PlayerStates.Walking => walkSpeed,
+            PlayerStates.Running => runSpeed,
+            _ => 1f
+        };
 
+        if (movementDirection != Vector3.zero)
+            playerRb.velocity = movementDirection * movementSpeed;
     }
 
     private Vector3 GetMovementDirectionNormalized()
     {
         return movementDirection.normalized;
+    }
+
+    private void ResetSadAnimation()
+    {
+        animationController.ActivateSadAnimation(false);
+        afkTimer = maxAfkTime;
     }
 }

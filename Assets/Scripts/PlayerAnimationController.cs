@@ -12,16 +12,16 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void ActivateSadAnimation(bool isActive)
     {
-        playerAnimator.SetBool("isSad", isActive);
+        playerAnimator.SetBool(Consts.PlayerAnimationParameter.SAD_PARAMETER, isActive);
     }
 
     public void ActivateWalkAnimation(bool isActive)
     {
-        playerAnimator.SetBool("isWalking", isActive);
+        playerAnimator.SetBool(Consts.PlayerAnimationParameter.WALK_PARAMETER, isActive);
     }
     
     public void ActivateRunAnimation(bool isActive)
     {
-        playerAnimator.SetBool("isRunning", isActive);
+        playerAnimator.SetBool(Consts.PlayerAnimationParameter.RUN_PARAMETER, isActive);
     }
 }
