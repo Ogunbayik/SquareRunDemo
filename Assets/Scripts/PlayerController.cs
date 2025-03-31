@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.LeftShift))
             isRunning = !isRunning;
 
         Movement();

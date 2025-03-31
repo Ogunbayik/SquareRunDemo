@@ -55,9 +55,12 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Consts.cs" />
     <Compile Include="Assets\Scripts\PlayerAnimationController.cs" />
-    <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\PlayerStates.cs" />
+    <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\PlayerStateController.cs" />
+    <Compile Include="Assets\Scripts\Cabine.cs" />
+    <Compile Include="Assets\Scripts\IInteractable.cs" />
+    <Compile Include="Assets\Scripts\PlayerInteract.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
