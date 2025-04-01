@@ -24,8 +24,6 @@ public class Cabine : MonoBehaviour, IInteractable
             return;
 
         playerSkinnedMeshRenderer.material.color = cabineColor;
-
-        Debug.Log(player.gameObject.name);
     }
 
 }

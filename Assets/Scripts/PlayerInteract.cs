@@ -6,12 +6,6 @@ public class PlayerInteract : MonoBehaviour
 {
     [SerializeField] private KeyCode interactButton;
 
-
-    private void Start()
-    {
-
-    }
-
     private void OnTriggerStay(Collider other)
     {
         if(other.gameObject.TryGetComponent<IInteractable>(out IInteractable interactable))

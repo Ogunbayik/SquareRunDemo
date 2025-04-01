@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
     [SerializeField] private float maxAfkTime;
+    [SerializeField] private LayerMask groundLayer;
 
     private float horizontalInput;
     private float verticalInput;
@@ -37,6 +38,11 @@ public class PlayerController : MonoBehaviour
 
         Movement();
         SetStates();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, 0.1f);
     }
 
     private void SetStates()
@@ -114,6 +120,8 @@ public class PlayerController : MonoBehaviour
 
         if (movementDirection != Vector3.zero)
             playerRb.velocity = movementDirection * movementSpeed;
+
+
     }
 
     private Vector3 GetMovementDirectionNormalized()
