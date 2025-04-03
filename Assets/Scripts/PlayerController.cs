@@ -7,18 +7,16 @@ public class PlayerController : MonoBehaviour
     private Rigidbody playerRb;
     private PlayerStateController stateController;
     private PlayerAnimationController animationController;
+    private PlayerMovementDirection playerMovementDirection;
 
     [Header("Settings")]
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
     [SerializeField] private float maxAfkTime;
-    [SerializeField] private LayerMask groundLayer;
 
     private float horizontalInput;
     private float verticalInput;
     private float afkTimer;
-
-    private Vector3 movementDirection;
 
     private bool isRunning;
     private void Awake()
@@ -26,6 +24,7 @@ public class PlayerController : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
         stateController = GetComponent<PlayerStateController>();
         animationController = GetComponentInChildren<PlayerAnimationController>();
+        playerMovementDirection = GetComponent<PlayerMovementDirection>();
     }
     void Start()
     {
@@ -40,15 +39,10 @@ public class PlayerController : MonoBehaviour
         SetStates();
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, 0.1f);
-    }
-
     private void SetStates()
     {
         var currentState = stateController.GetCurrentState();
-        var movementDirection = GetMovementDirectionNormalized();
+        var movementDirection = playerMovementDirection.GetMovementDirectionNormalized();
 
         switch (currentState)
         {
@@ -109,7 +103,7 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxisRaw(Consts.InputConts.HORIZONTAL_INPUT);
         verticalInput = Input.GetAxisRaw(Consts.InputConts.VERTICAL_INPUT);
 
-        movementDirection = new Vector3(horizontalInput, 0f, verticalInput);
+        var movementDirection = playerMovementDirection.GetMovementDirectionNormalized();
 
         var movementSpeed = stateController.GetCurrentState() switch
         {
@@ -123,12 +117,6 @@ public class PlayerController : MonoBehaviour
 
 
     }
-
-    private Vector3 GetMovementDirectionNormalized()
-    {
-        return movementDirection.normalized;
-    }
-
     private void ResetSadAnimation()
     {
         animationController.ActivateSadAnimation(false);

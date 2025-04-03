@@ -11,15 +11,15 @@ public class Ground : MonoBehaviour
     [SerializeField] private float minChangeTimer;
 
     private float changeTimer;
+    private Vector3 randomPosition;
     private void Awake()
     {
         groundMeshRenderer = GetComponent<MeshRenderer>();
-        GetRandomTime();
     }
     void Start()
     {
+        groundMeshRenderer.material.color = Color.red;
         GetRandomTime();
-        SetRandomColor();
     }
 
     private void Update()
