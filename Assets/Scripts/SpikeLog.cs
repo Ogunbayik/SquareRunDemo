@@ -4,28 +4,25 @@ using UnityEngine;
 
 public class SpikeLog : MonoBehaviour
 {
-    private List<Color> colorList = new List<Color>();
+    private GameColorManager colorManager;
+
+    [SerializeField] private Material[] spikeMaterials;
+    private void Awake()
+    {
+        colorManager = FindObjectOfType<GameColorManager>();
+    }
     void Start()
     {
-        foreach (var materials in gameObject.GetComponentInChildren<MeshRenderer>().materials)
+        spikeMaterials = gameObject.GetComponentInChildren<MeshRenderer>().materials;
+
+        var cylinderIndex = 0;
+        var spikeIndex = 1;
+        var randomColor = colorManager.GetRandomColor();
+
+        for (int i = 0; i < spikeMaterials.Length; i++)
         {
-            colorList.Add(materials.color);
-
-            if(materials.name == "Spike (Instance)")
-            {
-                materials.color = Color.black;
-            }
-            else if(materials.name == "Cylinder (Instance)")
-            {
-                materials.color = Color.red;
-            }
-           
+            spikeMaterials[cylinderIndex].color = randomColor;
+            spikeMaterials[spikeIndex].color = Color.black;
         }
-    }
-
-    void Update()
-    {
-        
-
     }
 }

@@ -7,8 +7,14 @@ public class Cabine : MonoBehaviour, IInteractable
     [Header("Settings")]
     [SerializeField] private Color cabineColor;
 
+    private GameColorManager colorManager;
+
     private MeshRenderer cabineRenderer;
 
+    private void Awake()
+    {
+        colorManager = FindObjectOfType<GameColorManager>();
+    }
     private void Start()
     {
         cabineRenderer = GetComponent<MeshRenderer>();
