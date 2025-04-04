@@ -7,15 +7,12 @@ public class PlayerController : MonoBehaviour
     private Rigidbody playerRb;
     private PlayerStateController stateController;
     private PlayerAnimationController animationController;
-    private PlayerMovementDirection playerMovementDirection;
 
     [Header("Settings")]
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
     [SerializeField] private float maxAfkTime;
 
-    private float horizontalInput;
-    private float verticalInput;
     private float afkTimer;
 
     private bool isRunning;
@@ -24,7 +21,6 @@ public class PlayerController : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
         stateController = GetComponent<PlayerStateController>();
         animationController = GetComponentInChildren<PlayerAnimationController>();
-        playerMovementDirection = GetComponent<PlayerMovementDirection>();
     }
     void Start()
     {
@@ -42,7 +38,7 @@ public class PlayerController : MonoBehaviour
     private void SetStates()
     {
         var currentState = stateController.GetCurrentState();
-        var movementDirection = playerMovementDirection.GetMovementDirectionNormalized();
+        var movementDirection = GameManager.Instance.GetMovementDirectionNormalized();
 
         switch (currentState)
         {
@@ -100,10 +96,7 @@ public class PlayerController : MonoBehaviour
 
     private void Movement()
     {
-        horizontalInput = Input.GetAxisRaw(Consts.InputConts.HORIZONTAL_INPUT);
-        verticalInput = Input.GetAxisRaw(Consts.InputConts.VERTICAL_INPUT);
-
-        var movementDirection = playerMovementDirection.GetMovementDirectionNormalized();
+        var movementDirection = GameManager.Instance.GetMovementDirectionNormalized();
 
         var movementSpeed = stateController.GetCurrentState() switch
         {
