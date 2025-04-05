@@ -2,8 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerColorCheck : MonoBehaviour
+public class PlayerGroundCheck : MonoBehaviour
 {
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.TryGetComponent<ColorfulGround>(out ColorfulGround colorfulGround))
+        {
+            GameManager.Instance.SetCurrentColorfulGround(colorfulGround);
+            SpawnManager.Instance.SetCurrentColorfulGround(colorfulGround);
+        }
+    }
+
+
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.TryGetComponent<Ground>(out Ground ground))

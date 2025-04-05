@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    private ColorfulGround currentColorfulGround;
     public enum GamePhase
     {
         FirstPhase,
@@ -32,6 +33,8 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
         #endregion
+
+        currentColorfulGround = null;
     }
     void Start()
     {
@@ -60,6 +63,21 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
+
+    public void SetCurrentColorfulGround(ColorfulGround colorfulGround)
+    {
+        if (currentColorfulGround == colorfulGround)
+            return;
+
+        currentColorfulGround = colorfulGround;
+    }
+    public void ChangePhase(GamePhase phase)
+    {
+        if(currentPhase == phase) { return; }
+
+        currentPhase = phase;
+    }
+
 
     public Vector3 GetMovementDirectionNormalized()
     {

@@ -6,7 +6,9 @@ public class SpikeLog : MonoBehaviour
 {
     private GameColorManager colorManager;
 
-    [SerializeField] private Material[] spikeMaterials;
+    private Material[] spikeMaterials;
+
+    [SerializeField] private float spikeSpeed;
     private void Awake()
     {
         colorManager = FindObjectOfType<GameColorManager>();

@@ -4,38 +4,61 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+    public static SpawnManager Instance;
+
+    private ColorfulGround currentColorfulGround;
+
     [SerializeField] private GameObject logPrefab;
-    [SerializeField] private float minimumBorder;
-    [SerializeField] private float maximumBorder;
     [SerializeField] private float maxSpawnTimer;
 
     private float spawnTimer;
 
     private Vector3 randomPosition;
+    private void Awake()
+    {
+        #region Singleton
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+        #endregion
+    }
     void Start()
     {
-        spawnTimer = 0;
+        spawnTimer = maxSpawnTimer;
     }
 
     void Update()
     {
-        
+        SpawnLogs();
     }
 
     private void SpawnLogs()
     {
-        
+        spawnTimer -= Time.deltaTime;
+        if (spawnTimer <= 0)
+        {
+            CreateLog();
+            spawnTimer = maxSpawnTimer;
+        }
     }
 
     private void CreateLog()
     {
         var log = Instantiate(logPrefab);
+        log.transform.position = currentColorfulGround.GetRandomPosition();
+        log.transform.rotation = currentColorfulGround.GetRotation();
     }
 
-    private Vector3 GetRandomPosition()
+    public void SetCurrentColorfulGround(ColorfulGround colorfulGround)
     {
-        var randomPos = Random.Range(minimumBorder, maximumBorder);
+        if (currentColorfulGround == colorfulGround)
+            return;
 
-        return randomPosition;
+        currentColorfulGround = colorfulGround;
     }
 }

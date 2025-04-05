@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55f8e85d7bfc0714086ff1083a79b2d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spikeMaterials: []
+  spikeSpeed: 5
 --- !u!1 &8868854575588110840
 GameObject:
   m_ObjectHideFlags: 0
