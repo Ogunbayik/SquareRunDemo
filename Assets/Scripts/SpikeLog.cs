@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class SpikeLog : MonoBehaviour
 {
+    public static Action OnTriggerPlayer;
+
     private GameColorManager colorManager;
 
     private Material[] spikeMaterials;
 
-    [SerializeField] private float spikeSpeed;
+    [SerializeField] private float movementSpeed;
     private void Awake()
     {
         colorManager = FindObjectOfType<GameColorManager>();
@@ -27,4 +30,19 @@ public class SpikeLog : MonoBehaviour
             spikeMaterials[spikeIndex].color = Color.black;
         }
     }
+
+    private void Update()
+    {
+        transform.Translate(transform.TransformDirection(transform.forward) * movementSpeed * Time.deltaTime);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
+        {
+            Debug.Log("Hit the Player");
+            OnTriggerPlayer?.Invoke();
+        }
+    }
+
 }
