@@ -8,12 +8,12 @@ public class SpawnManager : MonoBehaviour
 
     private ColorfulGround currentColorfulGround;
 
+    [Header("Settings")]
     [SerializeField] private GameObject logPrefab;
     [SerializeField] private float maxSpawnTimer;
 
     private float spawnTimer;
-
-    private Vector3 randomPosition;
+    private bool canSpawn;
     private void Awake()
     {
         #region Singleton
@@ -29,12 +29,13 @@ public class SpawnManager : MonoBehaviour
     }
     void Start()
     {
-        spawnTimer = maxSpawnTimer;
+        ResetSpawning();
     }
 
     void Update()
     {
-        SpawnLogs();
+        if (canSpawn)
+            SpawnLogs();
     }
 
     private void SpawnLogs()
@@ -60,5 +61,16 @@ public class SpawnManager : MonoBehaviour
             return;
 
         currentColorfulGround = colorfulGround;
+    }
+
+    public void ActivateSpawn(bool isActive)
+    {
+        canSpawn = isActive;
+    }
+
+    public void ResetSpawning()
+    {
+        spawnTimer = maxSpawnTimer;
+        canSpawn = false;
     }
 }

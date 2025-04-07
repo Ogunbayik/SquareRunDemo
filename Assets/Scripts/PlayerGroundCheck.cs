@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class PlayerGroundCheck : MonoBehaviour
 {
+    public enum PlayerMode
+    {
+        Boosted,
+        Normal,
+        Decreased
+    }
+
+    public PlayerMode currentMode;
+    private void Awake()
+    {
+        currentMode = PlayerMode.Normal;
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.TryGetComponent<ColorfulGround>(out ColorfulGround colorfulGround))
@@ -23,14 +35,21 @@ public class PlayerGroundCheck : MonoBehaviour
 
             if (groundColor == playerColor)
             {
-                //Player's score power can multiply in this area.
+                ChangeMode(PlayerMode.Boosted);
                 Debug.Log("Player can get boost in this area.");
             }
             else
             {
-                //Player's run stamina decrease in this area.
+                ChangeMode(PlayerMode.Decreased);
                 Debug.Log("Player decrease that it's power");
             }
         }
+    }
+
+    private void ChangeMode(PlayerMode mode)
+    {
+        if(currentMode == mode) { return; }
+
+        currentMode = mode;
     }
 }

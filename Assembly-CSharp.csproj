@@ -67,7 +67,6 @@
     <Compile Include="Assets\Scripts\ColorfulGround.cs" />
     <Compile Include="Assets\Scripts\GameColorManager.cs" />
     <Compile Include="Assets\Scripts\PlayerInteract.cs" />
-    <Compile Include="Assets\Scripts\PlayerMovementDirection.cs" />
     <Compile Include="Assets\Scripts\Ground.cs" />
   </ItemGroup>
   <ItemGroup>

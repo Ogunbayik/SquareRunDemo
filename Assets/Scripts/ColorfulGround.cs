@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ColorfulGround : MonoBehaviour
 {
+    [Header("Settings")]
     [SerializeField] private float spawnPosition;
     [SerializeField] private Quaternion spawnRotation;
     [SerializeField] private float minimumBorder;

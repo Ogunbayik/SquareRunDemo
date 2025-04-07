@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public enum GameStates
+    {
+        GameStart,
+        InGame,
+        Waiting,
+        GameOver,
+        PassPhase,
+        GameWin
+    }
+
     public static GameManager Instance { get; private set; }
 
     private ColorfulGround currentColorfulGround;
@@ -16,6 +26,7 @@ public class GameManager : MonoBehaviour
     }
 
     public GamePhase currentPhase;
+    public GameStates currentState;
 
     private Vector3 playerMovementDirection;
 
@@ -39,15 +50,42 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         currentPhase = GamePhase.FirstPhase;
+        currentState = GameStates.GameStart;
     }
 
     // Update is called once per frame
     void Update()
     {
+        switch(currentState)
+        {
+            case GameStates.GameStart:
+                SetPlayerMovementDirection();
+                break;
+            case GameStates.InGame:
+                SetPlayerMovementDirection();
+                SpawnManager.Instance.ActivateSpawn(true);
+                break;
+            case GameStates.Waiting:
+                SpawnManager.Instance.ResetSpawning();
+                break;
+            case GameStates.GameOver:
+                SpawnManager.Instance.ResetSpawning();
+                break;
+            case GameStates.PassPhase:
+                SpawnManager.Instance.ResetSpawning();
+                break;
+            case GameStates.GameWin:
+                SpawnManager.Instance.ResetSpawning();
+                break;
+        }
+    }
+
+    private void SetPlayerMovementDirection()
+    {
         horizontalInput = Input.GetAxisRaw(Consts.InputConts.HORIZONTAL_INPUT);
         verticalInput = Input.GetAxisRaw(Consts.InputConts.VERTICAL_INPUT);
 
-        switch(currentPhase)
+        switch (currentPhase)
         {
             case GamePhase.FirstPhase:
                 playerMovementDirection = new Vector3(horizontalInput, 0f, verticalInput);
