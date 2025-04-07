@@ -16,5 +16,10 @@ public class Consts
         public const string WALK_PARAMETER = "isWalking";
         public const string RUN_PARAMETER = "isRunning";
     }
+
+    public struct GemAnimationParameter
+    {
+        public const string COLLECT_PARAMETER = "isCollected";
+    }
     
 }

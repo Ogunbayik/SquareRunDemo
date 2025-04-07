@@ -57,6 +57,7 @@
     <Compile Include="Assets\Scripts\Consts.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerGroundCheck.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IInteractable.cs" />
+    <Compile Include="Assets\Scripts\Gem.cs" />
     <Compile Include="Assets\Scripts\Managers\SpawnManager.cs" />
     <Compile Include="Assets\Scripts\Environments\Cabine.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStates.cs" />
@@ -68,8 +69,7 @@
     <Compile Include="Assets\Scripts\Environments\ColorfulGround.cs" />
     <Compile Include="Assets\Scripts\Managers\GameColorManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInteract.cs" />
-    <Compile Include="Assets\Scripts\Environments\Ground.cs" />
-    <Compile Include="Assets\Scripts\Gem.cs" />
+    <Compile Include="Assets\Scripts\Grounds.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -12,6 +12,10 @@ public class PlayerGroundCheck : MonoBehaviour
     }
 
     public PlayerMode currentMode;
+
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask colorfulLayer;
+    [SerializeField] private float checkRadius;
     private void Awake()
     {
         currentMode = PlayerMode.Normal;
@@ -25,26 +29,23 @@ public class PlayerGroundCheck : MonoBehaviour
         }
     }
 
-
-    private void OnCollisionStay(Collision collision)
+    private void Update()
     {
-        if (collision.gameObject.TryGetComponent<Ground>(out Ground ground))
-        {
-            var groundColor = ground.GetComponent<MeshRenderer>().material.color;
-            var playerColor = GetComponentInChildren<SkinnedMeshRenderer>().material.color;
+        var checkGround = Physics.CheckSphere(transform.position, checkRadius, groundLayer);
+        var checkColorful = Physics.CheckSphere(transform.position, checkRadius, colorfulLayer);
 
-            if (groundColor == playerColor)
-            {
-                ChangeMode(PlayerMode.Boosted);
-                Debug.Log("Player can get boost in this area.");
-            }
-            else
-            {
-                ChangeMode(PlayerMode.Decreased);
-                Debug.Log("Player decrease that it's power");
-            }
+        if (checkGround)
+        {
+            ChangeMode(PlayerMode.Boosted);
+            Debug.Log("Player can get boost in this area.");
+        }
+        else if (checkColorful)
+        {
+            //Change Game Mode in this area.
+            Debug.Log("Player in colorful area.");
         }
     }
+
 
     private void ChangeMode(PlayerMode mode)
     {
