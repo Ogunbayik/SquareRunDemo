@@ -53,21 +53,23 @@
     <UnityVersion>2020.3.24f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\SpikeLog.cs" />
+    <Compile Include="Assets\Scripts\Environments\SpikeLog.cs" />
     <Compile Include="Assets\Scripts\Consts.cs" />
-    <Compile Include="Assets\Scripts\PlayerGroundCheck.cs" />
-    <Compile Include="Assets\Scripts\IInteractable.cs" />
-    <Compile Include="Assets\Scripts\SpawnManager.cs" />
-    <Compile Include="Assets\Scripts\Cabine.cs" />
-    <Compile Include="Assets\Scripts\PlayerStates.cs" />
-    <Compile Include="Assets\Scripts\GameManager.cs" />
-    <Compile Include="Assets\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\Scripts\PlayerStateController.cs" />
-    <Compile Include="Assets\Scripts\PlayerAnimationController.cs" />
-    <Compile Include="Assets\Scripts\ColorfulGround.cs" />
-    <Compile Include="Assets\Scripts\GameColorManager.cs" />
-    <Compile Include="Assets\Scripts\PlayerInteract.cs" />
-    <Compile Include="Assets\Scripts\Ground.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerGroundCheck.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\IInteractable.cs" />
+    <Compile Include="Assets\Scripts\Managers\SpawnManager.cs" />
+    <Compile Include="Assets\Scripts\Environments\Cabine.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerStates.cs" />
+    <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\ScoreManager.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerStateController.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerAnimationController.cs" />
+    <Compile Include="Assets\Scripts\Environments\ColorfulGround.cs" />
+    <Compile Include="Assets\Scripts\Managers\GameColorManager.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerInteract.cs" />
+    <Compile Include="Assets\Scripts\Environments\Ground.cs" />
+    <Compile Include="Assets\Scripts\Gem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

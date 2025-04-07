@@ -5,18 +5,28 @@ using System;
 
 public class SpikeLog : MonoBehaviour
 {
-    public static Action OnTriggerPlayer;
+    public static Action<int> OnHitPlayer;
 
     private GameColorManager colorManager;
 
     private Material[] spikeMaterials;
 
     [SerializeField] private float movementSpeed;
+    [SerializeField] private int minDecreaseScore;
+    [SerializeField] private int maxDecreaseScore;
+
+    private int decreasedScore;
     private void Awake()
     {
         colorManager = FindObjectOfType<GameColorManager>();
     }
     void Start()
+    {
+        SetRandomColor();
+        SetRandomDecreaseScore();
+    }
+
+    private void SetRandomColor()
     {
         spikeMaterials = gameObject.GetComponentInChildren<MeshRenderer>().materials;
 
@@ -31,6 +41,11 @@ public class SpikeLog : MonoBehaviour
         }
     }
 
+    private void SetRandomDecreaseScore()
+    {
+        decreasedScore = UnityEngine.Random.Range(minDecreaseScore, maxDecreaseScore);
+    }
+
     private void Update()
     {
         transform.Translate(transform.TransformDirection(transform.forward) * movementSpeed * Time.deltaTime);
@@ -41,7 +56,7 @@ public class SpikeLog : MonoBehaviour
         if(other.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
             Debug.Log("Hit the Player");
-            OnTriggerPlayer?.Invoke();
+            OnHitPlayer?.Invoke(decreasedScore);
         }
     }
 

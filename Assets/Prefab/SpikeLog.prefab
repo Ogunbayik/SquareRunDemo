@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 3
+  minDecreaseScore: -4
+  maxDecreaseScore: -1
 --- !u!136 &3238174473848531306
 CapsuleCollider:
   m_ObjectHideFlags: 0
