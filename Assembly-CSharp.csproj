@@ -66,10 +66,11 @@
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStateController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAnimationController.cs" />
-    <Compile Include="Assets\Scripts\Environments\ColorfulGround.cs" />
     <Compile Include="Assets\Scripts\Managers\GameColorManager.cs" />
-    <Compile Include="Assets\Scripts\Player\PlayerInteract.cs" />
     <Compile Include="Assets\Scripts\Grounds.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerInteract.cs" />
+    <Compile Include="Assets\Scripts\ColorfulGrounds.cs" />
+    <Compile Include="Assets\Scripts\Environments\Colorful.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

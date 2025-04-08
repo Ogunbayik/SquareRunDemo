@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance { get; private set; }
 
-    private ColorfulGround currentColorfulGround;
     public enum GamePhase
     {
         FirstPhase,
@@ -28,10 +27,16 @@ public class GameManager : MonoBehaviour
     public GamePhase currentPhase;
     public GameStates currentState;
 
+    [SerializeField] private float maxDelayTime;
+
+    public int currentPhaseIndex;
+
     private Vector3 playerMovementDirection;
 
     private float horizontalInput;
     private float verticalInput;
+    private float delayTimer;
+
     private void Awake()
     {
         #region Singleton
@@ -44,8 +49,6 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
         #endregion
-
-        currentColorfulGround = null;
     }
     void Start()
     {
@@ -73,6 +76,13 @@ public class GameManager : MonoBehaviour
                 break;
             case GameStates.PassPhase:
                 SpawnManager.Instance.ResetSpawning();
+
+                delayTimer -= Time.deltaTime;
+                if(delayTimer <= 0)
+                {
+                    currentPhaseIndex++;
+                    delayTimer = maxDelayTime;
+                }
                 break;
             case GameStates.GameWin:
                 SpawnManager.Instance.ResetSpawning();
@@ -80,40 +90,44 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        PlayerGroundCheck.OnPassPhase += PassNextPhase;
+    }
+
+    private void OnDisable()
+    {
+        PlayerGroundCheck.OnPassPhase -= PassNextPhase;
+    }
+
+    private void PassNextPhase()
+    {
+        currentState = GameStates.PassPhase;
+    }
     private void SetPlayerMovementDirection()
     {
         horizontalInput = Input.GetAxisRaw(Consts.InputConts.HORIZONTAL_INPUT);
         verticalInput = Input.GetAxisRaw(Consts.InputConts.VERTICAL_INPUT);
 
-        switch (currentPhase)
+        switch (currentPhaseIndex)
         {
-            case GamePhase.FirstPhase:
+            case 0:
+                currentPhase = GamePhase.FirstPhase;
                 playerMovementDirection = new Vector3(horizontalInput, 0f, verticalInput);
                 break;
-            case GamePhase.SecondPhase:
+            case 1:
+                currentPhase = GamePhase.SecondPhase;
                 playerMovementDirection = new Vector3(verticalInput, 0f, -horizontalInput);
                 break;
-            case GamePhase.ThirdPhase:
+            case 2:
+                currentPhase = GamePhase.ThirdPhase;
                 playerMovementDirection = new Vector3(-horizontalInput, 0f, -verticalInput);
                 break;
-            case GamePhase.LastPhase:
+            case 3:
+                currentPhase = GamePhase.LastPhase;
                 playerMovementDirection = new Vector3(-verticalInput, 0f, horizontalInput);
                 break;
         }
-    }
-
-    public void SetCurrentColorfulGround(ColorfulGround colorfulGround)
-    {
-        if (currentColorfulGround == colorfulGround)
-            return;
-
-        currentColorfulGround = colorfulGround;
-    }
-    public void ChangePhase(GamePhase phase)
-    {
-        if(currentPhase == phase) { return; }
-
-        currentPhase = phase;
     }
 
 

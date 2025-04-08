@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9148226604384378466}
   - component: {fileID: 9148226604384378477}
   - component: {fileID: 9148226604384378476}
-  - component: {fileID: 7941969242271884926}
+  - component: {fileID: 7465696338132634204}
   m_Layer: 7
   m_Name: ColorfulGround
   m_TagString: Untagged
@@ -117,7 +117,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &7941969242271884926
+--- !u!114 &7465696338132634204
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,6 +126,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9148226604384378479}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30f01998fbb79014a8c5e46295b3ffb7, type: 3}
+  m_Script: {fileID: 11500000, guid: af00854703eccc64eb44599cd5dce14d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

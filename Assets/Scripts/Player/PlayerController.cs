@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody playerRb;
+    private SkinnedMeshRenderer skinnedMeshRenderer;
     private PlayerStateController stateController;
     private PlayerAnimationController animationController;
 
@@ -24,11 +25,13 @@ public class PlayerController : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
         stateController = GetComponent<PlayerStateController>();
         animationController = GetComponentInChildren<PlayerAnimationController>();
+        skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
     }
     void Start()
     {
         afkTimer = maxAfkTime;
         currentStamina = maxStamina;
+        skinnedMeshRenderer.material.color = GameColorManager.Instance.GetStartColor();
     }
     void Update()
     {

@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerGroundCheck : MonoBehaviour
 {
+    public static Action OnPassPhase;
     public enum PlayerMode
     {
         Boosted,
@@ -14,38 +16,56 @@ public class PlayerGroundCheck : MonoBehaviour
     public PlayerMode currentMode;
 
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private LayerMask colorfulLayer;
     [SerializeField] private float checkRadius;
+
+    private Grounds grounds;
     private void Awake()
     {
         currentMode = PlayerMode.Normal;
+        grounds = GameObject.FindObjectOfType<Grounds>();
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.TryGetComponent<ColorfulGround>(out ColorfulGround colorfulGround))
+        var colorfulGround = collision.gameObject.TryGetComponent<Colorful>(out Colorful colorful);
+        var colorfulIndex = colorful.GetColorfulGroundIndex();
+        var phaseIndex = GameManager.Instance.currentPhaseIndex;
+        
+        if(colorfulGround)
         {
-            GameManager.Instance.SetCurrentColorfulGround(colorfulGround);
-            SpawnManager.Instance.SetCurrentColorfulGround(colorfulGround);
+            if (phaseIndex < colorfulIndex)
+            {
+                OnPassPhase?.Invoke();
+            }
         }
     }
-
     private void Update()
     {
+        CheckGround();
+    }
+
+    private void CheckGround()
+    {
+        //USE PHYSÝCS METHOD FOR BOOSTED AREA.
         var checkGround = Physics.CheckSphere(transform.position, checkRadius, groundLayer);
-        var checkColorful = Physics.CheckSphere(transform.position, checkRadius, colorfulLayer);
 
         if (checkGround)
         {
-            ChangeMode(PlayerMode.Boosted);
-            Debug.Log("Player can get boost in this area.");
-        }
-        else if (checkColorful)
-        {
-            //Change Game Mode in this area.
-            Debug.Log("Player in colorful area.");
+            var playerColor = GetComponentInChildren<SkinnedMeshRenderer>().material.color;
+            var currentGround = grounds.GetCurrentGround();
+            var groundColor = currentGround.GetComponent<MeshRenderer>().material.color;
+
+            if (playerColor == groundColor)
+            {
+                ChangeMode(PlayerMode.Boosted);
+                Debug.Log("Same Color");
+            }
+            else
+            {
+                ChangeMode(PlayerMode.Decreased);
+                Debug.Log("Different Color");
+            }
         }
     }
-
 
     private void ChangeMode(PlayerMode mode)
     {

@@ -10,6 +10,8 @@ public class Grounds : MonoBehaviour
     [SerializeField] private float minChangeTime;
     [SerializeField] private float maxChangeTime;
 
+    private Transform currentGround;
+
     private float randomTime;
     void Start()
     {
@@ -34,6 +36,7 @@ public class Grounds : MonoBehaviour
         for (int i = 0; i < groundList.Count; i++)
         {
             groundList[i].gameObject.GetComponent<MeshRenderer>().material.color = GameColorManager.Instance.GetStartColor();
+            SetCurrentGround();
         }
     }
 
@@ -51,6 +54,17 @@ public class Grounds : MonoBehaviour
             //Reset timer
             randomTime = GetRandomTime();
         }
+    }
+
+    private void SetCurrentGround()
+    {
+        var phaseIndex = GameManager.Instance.currentPhaseIndex;
+        currentGround = groundList[phaseIndex];
+    }
+
+    public Transform GetCurrentGround()
+    {
+        return currentGround;
     }
 
     private float GetRandomTime()

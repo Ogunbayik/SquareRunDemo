@@ -130,26 +130,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 250649965}
     m_Modifications:
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: maximumBorder
-      value: 48
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: minimumBorder
-      value: 42
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnPosition
-      value: -38
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnRotation.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 9148226604384378464, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -196,7 +176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9148226604384378479, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
       propertyPath: m_Name
-      value: ThirdColorful
+      value: ColorfulThird
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
@@ -274,6 +254,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 250649965}
+  - component: {fileID: 250649966}
   m_Layer: 0
   m_Name: ColorfulGrounds
   m_TagString: Untagged
@@ -299,6 +280,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &250649966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250649964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e49919cd2e81484d8a982fb6f015686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorfulGroundList: []
 --- !u!1 &268693517
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,30 +330,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 250649965}
     m_Modifications:
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: directionX
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: maximumBorder
-      value: -42
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: minimumBorder
-      value: -48
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnPosition
-      value: -38
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnRotation.w
-      value: -0.70710677
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnRotation.y
-      value: 0.70710677
-      objectReference: {fileID: 0}
     - target: {fileID: 9148226604384378464, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -406,7 +376,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9148226604384378479, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
       propertyPath: m_Name
-      value: FourthColorful
+      value: ColorfulFourth
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
@@ -702,30 +672,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 250649965}
     m_Modifications:
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: directionX
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: maximumBorder
-      value: 48
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: minimumBorder
-      value: 42
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnPosition
-      value: 38
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnRotation.w
-      value: 0.70710677
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnRotation.y
-      value: 0.70710677
-      objectReference: {fileID: 0}
     - target: {fileID: 9148226604384378464, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -772,7 +718,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9148226604384378479, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
       propertyPath: m_Name
-      value: SecondColorful
+      value: ColorfulSecond
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
@@ -876,6 +822,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentPhase: 0
   currentState: 0
+  currentPhaseIndex: 0
 --- !u!4 &887083553
 Transform:
   m_ObjectHideFlags: 0
@@ -1049,8 +996,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1061400884}
-  m_LocalRotation: {x: 0.22975291, y: -0.000000016746089, z: 0.0000000039532155, w: 0.973249}
-  m_LocalPosition: {x: -45, y: 5, z: -49}
+  m_LocalRotation: {x: 0.22975291, y: 0.000000016746089, z: -0.0000000039532155, w: 0.973249}
+  m_LocalPosition: {x: -45, y: 5, z: 32.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 593459144}
@@ -1558,8 +1505,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
-  m_LocalRotation: {x: 0.22975291, y: -0.000000016746089, z: 0.0000000039532155, w: 0.973249}
-  m_LocalPosition: {x: -45, y: 5, z: -49}
+  m_LocalRotation: {x: 0.22975291, y: 0.000000016746089, z: -0.0000000039532155, w: 0.973249}
+  m_LocalPosition: {x: -45, y: 5, z: 32.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1674,7 +1621,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1721651611}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -45, y: 0, z: -45}
+  m_LocalPosition: {x: -45, y: 0, z: 36.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7385957857873951470}
@@ -1724,9 +1671,6 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  colorfulLayer:
-    serializedVersion: 2
-    m_Bits: 128
   checkRadius: 0.1
 --- !u!1001 &1900750246
 PrefabInstance:
@@ -1969,6 +1913,10 @@ PrefabInstance:
     - target: {fileID: 5814915420997745604, guid: a4e604f0ca494514bb0edb8016c5bc13, type: 3}
       propertyPath: m_Name
       value: Gem
+      objectReference: {fileID: 0}
+    - target: {fileID: 5814915420997745604, guid: a4e604f0ca494514bb0edb8016c5bc13, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5814915420997745607, guid: a4e604f0ca494514bb0edb8016c5bc13, type: 3}
       propertyPath: m_RootOrder
@@ -4259,30 +4207,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 250649965}
     m_Modifications:
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: directionX
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: maximumBorder
-      value: -42
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: minimumBorder
-      value: -48
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnPosition
-      value: 38
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnRotation.w
-      value: -0.00000004371139
-      objectReference: {fileID: 0}
-    - target: {fileID: 7941969242271884926, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
-      propertyPath: spawnRotation.y
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9148226604384378464, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -4329,7 +4253,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9148226604384378479, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}
       propertyPath: m_Name
-      value: FirstColorful
+      value: ColorfulFirst
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: c2eac0a54b793f14f9efdb53b1c17a2b, type: 3}

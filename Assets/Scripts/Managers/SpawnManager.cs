@@ -6,8 +6,6 @@ public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager Instance;
 
-    private ColorfulGround currentColorfulGround;
-
     [Header("Settings")]
     [SerializeField] private GameObject logPrefab;
     [SerializeField] private float maxSpawnTimer;
@@ -51,18 +49,7 @@ public class SpawnManager : MonoBehaviour
     private void CreateLog()
     {
         var log = Instantiate(logPrefab);
-        log.transform.position = currentColorfulGround.GetRandomPosition();
-        log.transform.rotation = currentColorfulGround.GetRotation();
     }
-
-    public void SetCurrentColorfulGround(ColorfulGround colorfulGround)
-    {
-        if (currentColorfulGround == colorfulGround)
-            return;
-
-        currentColorfulGround = colorfulGround;
-    }
-
     public void ActivateSpawn(bool isActive)
     {
         canSpawn = isActive;
