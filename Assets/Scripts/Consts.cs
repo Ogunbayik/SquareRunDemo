@@ -15,6 +15,7 @@ public class Consts
         public const string SAD_PARAMETER = "isSad";
         public const string WALK_PARAMETER = "isWalking";
         public const string RUN_PARAMETER = "isRunning";
+        public const string TELEPORT_PARAMETER = "isTeleporting";
     }
 
     public struct GemAnimationParameter

@@ -6,6 +6,7 @@ public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
 
+    [SerializeField] private int passScore;
     private int currentScore = 10;
     private void Awake()
     {
@@ -17,6 +18,19 @@ public class ScoreManager : MonoBehaviour
         else
             Instance = this;
         #endregion
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            UpgradeScore(10);
+        }
+
+        if (currentScore >= passScore && GameManager.Instance.currentState == GameManager.GameStates.InGame)
+        {
+            GameManager.Instance.ResetDelayTimer();
+            GameManager.Instance.ChangeState(GameManager.GameStates.Waiting);
+        }
     }
 
     private void OnEnable()

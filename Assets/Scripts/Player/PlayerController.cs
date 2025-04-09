@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     private SkinnedMeshRenderer skinnedMeshRenderer;
     private PlayerStateController stateController;
     private PlayerAnimationController animationController;
+    private ColorfulGrounds colorfulGrounds;
 
     [Header("Settings")]
     [SerializeField] private float walkSpeed;
@@ -26,12 +27,21 @@ public class PlayerController : MonoBehaviour
         stateController = GetComponent<PlayerStateController>();
         animationController = GetComponentInChildren<PlayerAnimationController>();
         skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        colorfulGrounds = GameObject.FindObjectOfType<ColorfulGrounds>();
     }
     void Start()
     {
         afkTimer = maxAfkTime;
         currentStamina = maxStamina;
         skinnedMeshRenderer.material.color = GameColorManager.Instance.GetStartColor();
+    }
+    private void OnEnable()
+    {
+        GameManager.OnTeleport += Teleport;
+    }
+    private void OnDisable()
+    {
+        GameManager.OnTeleport -= Teleport;
     }
     void Update()
     {
@@ -169,13 +179,20 @@ public class PlayerController : MonoBehaviour
         {
             PlayerStates.Walking => walkSpeed,
             PlayerStates.Running => runSpeed,
-            _ => 1f
+            _ => 0f
         };
 
         if (movementDirection != Vector3.zero)
             playerRb.velocity = movementDirection * movementSpeed;
 
 
+    }
+    private void Teleport()
+    {
+        var desiredPosition = colorfulGrounds.GetNextColorfulGround();
+
+        //Add animation delay timer
+        transform.position = desiredPosition.position;
     }
     private void ResetSadAnimation()
     {

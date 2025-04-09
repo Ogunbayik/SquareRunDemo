@@ -9,6 +9,14 @@ public class PlayerAnimationController : MonoBehaviour
     {
         playerAnimator = GetComponent<Animator>();
     }
+    private void OnEnable()
+    {
+        GameManager.OnTeleport += ActvateTeleportAnimation;
+    }
+    private void OnDisable()
+    {
+        GameManager.OnTeleport -= ActvateTeleportAnimation;
+    }
 
     public void ActivateSadAnimation(bool isActive)
     {
@@ -23,5 +31,17 @@ public class PlayerAnimationController : MonoBehaviour
     public void ActivateRunAnimation(bool isActive)
     {
         playerAnimator.SetBool(Consts.PlayerAnimationParameter.RUN_PARAMETER, isActive);
+    }
+
+    private void ActvateTeleportAnimation()
+    {
+        playerAnimator.SetBool(Consts.PlayerAnimationParameter.TELEPORT_PARAMETER, true);
+    }
+
+    public void ResetTeleportAnimation()
+    {
+        playerAnimator.SetBool(Consts.PlayerAnimationParameter.TELEPORT_PARAMETER, false);
+        //After teleport character can move
+        GameManager.Instance.ChangeState(GameManager.GameStates.GameStart);
     }
 }

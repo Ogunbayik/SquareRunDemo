@@ -6,6 +6,8 @@ public class ColorfulGrounds : MonoBehaviour
 {
     [SerializeField] private List<Transform> colorfulGroundList = new List<Transform>();
 
+    private Transform nextColorfulGround;
+
     private void Start()
     {
         var allColorfulGrounds = GetComponentsInChildren<Transform>();
@@ -16,9 +18,12 @@ public class ColorfulGrounds : MonoBehaviour
             colorfulGroundList.Remove(this.transform);
         }
 
-        for (int i = 0; i < colorfulGroundList.Count; i++)
-        {
-            colorfulGroundList[i].GetComponent<Colorful>().SetColorfulGroundIndex(i);
-        }
+        var currentIndex = GameManager.Instance.currentPhaseIndex;
+        nextColorfulGround = colorfulGroundList[currentIndex + 1];
+    }
+
+    public Transform GetNextColorfulGround()
+    {
+        return nextColorfulGround;
     }
 }

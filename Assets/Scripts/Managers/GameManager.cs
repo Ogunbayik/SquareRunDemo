@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GameManager : MonoBehaviour
 {
+    public static Action OnTeleport;
+
     public enum GameStates
     {
         GameStart,
         InGame,
         Waiting,
         GameOver,
-        PassPhase,
+        PassedPhase,
         GameWin
     }
 
@@ -63,46 +66,39 @@ public class GameManager : MonoBehaviour
         {
             case GameStates.GameStart:
                 SetPlayerMovementDirection();
+
                 break;
             case GameStates.InGame:
                 SetPlayerMovementDirection();
                 SpawnManager.Instance.ActivateSpawn(true);
+
+
+                delayTimer = maxDelayTime;
+                //Playing and This state can change GameOver or Waiting
                 break;
             case GameStates.Waiting:
                 SpawnManager.Instance.ResetSpawning();
+                playerMovementDirection = Vector3.zero;
+
+                delayTimer -= Time.deltaTime;
+
+                if(delayTimer <= 0)
+                {
+                    OnTeleport?.Invoke();
+                    delayTimer = maxDelayTime;
+                }
+
                 break;
             case GameStates.GameOver:
                 SpawnManager.Instance.ResetSpawning();
                 break;
-            case GameStates.PassPhase:
+            case GameStates.PassedPhase:
                 SpawnManager.Instance.ResetSpawning();
-
-                delayTimer -= Time.deltaTime;
-                if(delayTimer <= 0)
-                {
-                    currentPhaseIndex++;
-                    delayTimer = maxDelayTime;
-                }
                 break;
             case GameStates.GameWin:
                 SpawnManager.Instance.ResetSpawning();
                 break;
         }
-    }
-
-    private void OnEnable()
-    {
-        PlayerGroundCheck.OnPassPhase += PassNextPhase;
-    }
-
-    private void OnDisable()
-    {
-        PlayerGroundCheck.OnPassPhase -= PassNextPhase;
-    }
-
-    private void PassNextPhase()
-    {
-        currentState = GameStates.PassPhase;
     }
     private void SetPlayerMovementDirection()
     {
@@ -134,5 +130,18 @@ public class GameManager : MonoBehaviour
     public Vector3 GetMovementDirectionNormalized()
     {
         return playerMovementDirection.normalized;
+    }
+
+    public void ChangeState(GameStates state)
+    {
+        if (currentState == state)
+            return;
+
+        currentState = state;
+    }
+
+    public void ResetDelayTimer()
+    {
+        delayTimer = maxDelayTime;
     }
 }

@@ -24,20 +24,20 @@ public class PlayerGroundCheck : MonoBehaviour
         currentMode = PlayerMode.Normal;
         grounds = GameObject.FindObjectOfType<Grounds>();
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        var colorfulGround = collision.gameObject.TryGetComponent<Colorful>(out Colorful colorful);
-        var colorfulIndex = colorful.GetColorfulGroundIndex();
-        var phaseIndex = GameManager.Instance.currentPhaseIndex;
-        
-        if(colorfulGround)
-        {
-            if (phaseIndex < colorfulIndex)
-            {
-                OnPassPhase?.Invoke();
-            }
-        }
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    var colorfulGround = collision.gameObject.TryGetComponent<Colorful>(out Colorful colorful);
+    //    var colorfulIndex = colorful.GetColorfulGroundIndex();
+    //    var phaseIndex = GameManager.Instance.currentPhaseIndex;
+
+    //    if (colorfulGround)
+    //    {
+    //        if (phaseIndex < colorfulIndex)
+    //        {
+    //            OnPassPhase?.Invoke();
+    //        }
+    //    }
+    //}
     private void Update()
     {
         CheckGround();
@@ -57,12 +57,10 @@ public class PlayerGroundCheck : MonoBehaviour
             if (playerColor == groundColor)
             {
                 ChangeMode(PlayerMode.Boosted);
-                Debug.Log("Same Color");
             }
             else
             {
                 ChangeMode(PlayerMode.Decreased);
-                Debug.Log("Different Color");
             }
         }
     }

@@ -34,6 +34,7 @@ public class SpawnManager : MonoBehaviour
     {
         if (canSpawn)
             SpawnLogs();
+
     }
 
     private void SpawnLogs()
