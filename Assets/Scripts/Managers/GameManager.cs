@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     {
         GameStart,
         InGame,
-        Waiting,
+        Teleporting,
         GameOver,
         PassedPhase,
         GameWin
@@ -70,14 +70,12 @@ public class GameManager : MonoBehaviour
                 break;
             case GameStates.InGame:
                 SetPlayerMovementDirection();
-                SpawnManager.Instance.ActivateSpawn(true);
 
 
                 delayTimer = maxDelayTime;
                 //Playing and This state can change GameOver or Waiting
                 break;
-            case GameStates.Waiting:
-                SpawnManager.Instance.ResetSpawning();
+            case GameStates.Teleporting:
                 playerMovementDirection = Vector3.zero;
 
                 delayTimer -= Time.deltaTime;
@@ -87,16 +85,12 @@ public class GameManager : MonoBehaviour
                     OnTeleport?.Invoke();
                     delayTimer = maxDelayTime;
                 }
-
                 break;
             case GameStates.GameOver:
-                SpawnManager.Instance.ResetSpawning();
                 break;
             case GameStates.PassedPhase:
-                SpawnManager.Instance.ResetSpawning();
                 break;
             case GameStates.GameWin:
-                SpawnManager.Instance.ResetSpawning();
                 break;
         }
     }

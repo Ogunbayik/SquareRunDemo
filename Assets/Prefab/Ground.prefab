@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7684655324954174515}
   - component: {fileID: 7684655324954174514}
   - component: {fileID: 7684655324954174525}
-  - component: {fileID: -3929505253486092703}
   m_Layer: 6
   m_Name: Ground
   m_TagString: Untagged
@@ -97,26 +96,3 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &-3929505253486092703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7684655324954174524}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8e0e1e27951c3c4ab8d66e503d10888, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spikePrefab: {fileID: 0}
-  minimumBorder: 0
-  maximumBorder: 0
-  allColors:
-  - {r: 0, g: 0, b: 1, a: 1}
-  - {r: 0, g: 1, b: 0, a: 1}
-  - {r: 1, g: 1, b: 0, a: 1}
-  - {r: 1, g: 0.5, b: 0, a: 1}
-  - {r: 1, g: 0, b: 0, a: 1}
-  maxChangeTimer: 40
-  minChangeTimer: 60

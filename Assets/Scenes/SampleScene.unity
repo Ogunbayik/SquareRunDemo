@@ -518,7 +518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ae375cbdb3e010489747b80ab5afc76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logPrefab: {fileID: 6453071163049400086, guid: 507ec9dc0caf730448976168104bc1fb, type: 3}
+  spikePrefab: {fileID: 6453071163049400086, guid: 507ec9dc0caf730448976168104bc1fb, type: 3}
   maxSpawnTimer: 5
 --- !u!4 &623587531
 Transform:
@@ -1614,7 +1614,7 @@ MonoBehaviour:
   walkSpeed: 1.5
   runSpeed: 3.5
   maxAfkTime: 5
-  maxStamina: 4
+  maxStamina: 5
 --- !u!4 &1721651615
 Transform:
   m_ObjectHideFlags: 0

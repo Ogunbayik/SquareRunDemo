@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private float currentStamina;
 
     private bool isRunning;
+    private bool isWalking;
     private bool isTired;
     private void Awake()
     {
@@ -31,8 +32,8 @@ public class PlayerController : MonoBehaviour
     }
     void Start()
     {
-        afkTimer = maxAfkTime;
         currentStamina = maxStamina;
+        afkTimer = maxAfkTime;
         skinnedMeshRenderer.material.color = GameColorManager.Instance.GetStartColor();
     }
     private void OnEnable()
@@ -45,54 +46,84 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            if (!isTired)
-                isRunning = !isRunning;
-            else
-                isRunning = false;
-        }
-
-        Movement();
         SetStates();
+        PlayerBehaviour();
+        CheckStamina();
     }
-
     private void SetStates()
     {
+        if (IsWalking())
+        {
+            if (!IsRunning())
+                stateController.ChangeState(PlayerStates.Walking);
+            else
+                stateController.ChangeState(PlayerStates.Running);
+        }
+        else
+        {
+            stateController.ChangeState(PlayerStates.Idle);
+        }
+    }
+    private void PlayerBehaviour()
+    {
         var currentState = stateController.GetCurrentState();
-        var movementDirection = GameManager.Instance.GetMovementDirectionNormalized();
 
-        switch (currentState)
+        switch(currentState)
         {
             case PlayerStates.Idle:
-                IdleState(movementDirection);
+                PlayerIdle();
                 break;
             case PlayerStates.Walking:
-                WalkState(movementDirection);
+                PlayerWalking();
                 break;
             case PlayerStates.Running:
-                RunState(movementDirection);
+                PlayerRunning();
                 break;
         }
     }
 
-    private void IdleState(Vector3 movementDirection)
+    private void PlayerIdle()
     {
         CheckPlayerAfk();
-        RecoverStamina();
 
-        if (movementDirection != Vector3.zero && !isRunning)
+        animationController.ActivateWalkAnimation(false);
+        animationController.ActivateRunAnimation(false);
+    }
+
+    private void PlayerWalking()
+    {
+        ResetSadAnimation();
+
+        Movement();
+    }
+
+    private void PlayerRunning()
+    {
+        ResetSadAnimation();
+        Movement();
+    }
+
+    private void CheckStamina()
+    {
+        if (IsRunning())
         {
-            //Player is walking
-            stateController.ChangeState(PlayerStates.Walking);
-            animationController.ActivateWalkAnimation(true);
+            currentStamina -= Time.deltaTime;
+
+            if (currentStamina <= 0)
+            {
+                currentStamina = 0;
+                isTired = true;
+            }
         }
-        else if (movementDirection != Vector3.zero && isRunning)
+        else
         {
-            //Player is running
-            stateController.ChangeState(PlayerStates.Running);
-            animationController.ActivateRunAnimation(true);
-            animationController.ActivateWalkAnimation(true);
+            currentStamina += Time.deltaTime;
+
+            if (currentStamina >= maxStamina)
+            {
+                currentStamina = maxStamina;
+                isTired = false;
+            }
         }
     }
 
@@ -105,72 +136,6 @@ public class PlayerController : MonoBehaviour
             afkTimer = 0;
         }
     }
-
-    private void WalkState(Vector3 movementDirection)
-    {
-        ResetSadAnimation();
-        RecoverStamina();
-
-        if (movementDirection != Vector3.zero && isRunning)
-        {
-            //Player is running
-            stateController.ChangeState(PlayerStates.Running);
-            animationController.ActivateRunAnimation(true);
-        }
-        else if (movementDirection == Vector3.zero)
-        {
-            //Player is idle
-            stateController.ChangeState(PlayerStates.Idle);
-            animationController.ActivateWalkAnimation(false);
-        }
-    }
-
-    private void RecoverStamina()
-    {
-        isTired = false;
-
-        if (currentStamina < maxStamina)
-            currentStamina += Time.deltaTime;
-        else
-            currentStamina = maxStamina;
-    }
-    private void RunState(Vector3 movementDirection)
-    {
-        ResetSadAnimation();
-        CheckPlayerStamina();
-
-        if (movementDirection != Vector3.zero && !isRunning)
-        {
-            //Player is walking
-            stateController.ChangeState(PlayerStates.Walking);
-            animationController.ActivateRunAnimation(false);
-        }
-        else if (movementDirection == Vector3.zero)
-        {
-            //Player is idle
-            stateController.ChangeState(PlayerStates.Idle);
-            animationController.ActivateRunAnimation(false);
-            animationController.ActivateWalkAnimation(false);
-        }
-    }
-
-    private void CheckPlayerStamina()
-    {
-        currentStamina -= Time.deltaTime;
-
-        if (currentStamina <= 0)
-        {
-            isTired = true;
-            isRunning = false;
-            currentStamina += Time.deltaTime;
-        }
-        else if (currentStamina >= maxStamina)
-        {
-            currentStamina = maxStamina;
-            isTired = false;
-        }
-    }
-
     private void Movement()
     {
         var movementDirection = GameManager.Instance.GetMovementDirectionNormalized();
@@ -182,21 +147,47 @@ public class PlayerController : MonoBehaviour
             _ => 0f
         };
 
-        if (movementDirection != Vector3.zero)
-            playerRb.velocity = movementDirection * movementSpeed;
-
-
+        playerRb.velocity = movementDirection * movementSpeed;
     }
+    private bool IsWalking()
+    {
+        var movementDirection = GameManager.Instance.GetMovementDirectionNormalized();
+        animationController.ActivateWalkAnimation(isWalking);
+        return isWalking = movementDirection != Vector3.zero;
+    }
+
+    private bool IsRunning()
+    {
+        if (!isTired)
+        {
+            isRunning = Input.GetKey(KeyCode.LeftShift);
+            animationController.ActivateRunAnimation(isRunning);
+        }
+        else
+        {
+            isRunning = false;
+            animationController.ActivateRunAnimation(isRunning);
+        }
+
+        return isRunning;
+    }
+
     private void Teleport()
     {
-        var desiredPosition = colorfulGrounds.GetNextColorfulGround();
+        var teleportPosition = colorfulGrounds.GetNextColorfulGround();
 
         //Add animation delay timer
-        transform.position = desiredPosition.position;
+        transform.position = teleportPosition.position;
     }
+
     private void ResetSadAnimation()
     {
         animationController.ActivateSadAnimation(false);
         afkTimer = maxAfkTime;
     }
+
+
+
+
+
 }

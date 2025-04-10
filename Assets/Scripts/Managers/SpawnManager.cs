@@ -7,11 +7,10 @@ public class SpawnManager : MonoBehaviour
     public static SpawnManager Instance;
 
     [Header("Settings")]
-    [SerializeField] private GameObject logPrefab;
+    [SerializeField] private GameObject spikePrefab;
     [SerializeField] private float maxSpawnTimer;
 
     private float spawnTimer;
-    private bool canSpawn;
     private void Awake()
     {
         #region Singleton
@@ -32,33 +31,24 @@ public class SpawnManager : MonoBehaviour
 
     void Update()
     {
-        if (canSpawn)
-            SpawnLogs();
-
+        if (GameManager.Instance.currentState == GameManager.GameStates.InGame)
+            SpawnSpikes();
+        else
+            ResetSpawning();
     }
 
-    private void SpawnLogs()
+    private void SpawnSpikes()
     {
         spawnTimer -= Time.deltaTime;
         if (spawnTimer <= 0)
         {
-            CreateLog();
+            var log = Instantiate(spikePrefab);
             spawnTimer = maxSpawnTimer;
         }
-    }
-
-    private void CreateLog()
-    {
-        var log = Instantiate(logPrefab);
-    }
-    public void ActivateSpawn(bool isActive)
-    {
-        canSpawn = isActive;
     }
 
     public void ResetSpawning()
     {
         spawnTimer = maxSpawnTimer;
-        canSpawn = false;
     }
 }

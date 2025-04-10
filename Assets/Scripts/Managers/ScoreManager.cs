@@ -29,7 +29,7 @@ public class ScoreManager : MonoBehaviour
         if (currentScore >= passScore && GameManager.Instance.currentState == GameManager.GameStates.InGame)
         {
             GameManager.Instance.ResetDelayTimer();
-            GameManager.Instance.ChangeState(GameManager.GameStates.Waiting);
+            GameManager.Instance.ChangeState(GameManager.GameStates.Teleporting);
         }
     }
 
