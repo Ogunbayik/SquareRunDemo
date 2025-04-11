@@ -4,19 +4,29 @@ using UnityEngine;
 
 public class Grounds : MonoBehaviour
 {
-    private List<Transform> groundList = new List<Transform>();
+    [SerializeField] private List<Transform> groundList = new List<Transform>();
 
     [Header("Settings")]
     [SerializeField] private float minChangeTime;
     [SerializeField] private float maxChangeTime;
 
     private Transform currentGround;
+    private Transform spawnPosition;
 
     private float randomTime;
     void Start()
     {
         SetupGrounds();
         GetRandomTime();
+    }
+    private void OnEnable()
+    {
+        GameManager.OnTeleported += SetCurrentGround;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnTeleported -= SetCurrentGround;
     }
 
     private void Update()
@@ -27,17 +37,24 @@ public class Grounds : MonoBehaviour
     private void SetupGrounds()
     {
         var allGrounds = gameObject.GetComponentsInChildren<Transform>();
+
         foreach (var ground in allGrounds)
         {
             groundList.Add(ground);
             groundList.Remove(this.transform);
+
+            if(ground.GetComponent<MeshRenderer>() == null)
+            {
+                groundList.Remove(ground);
+            }
         }
 
         for (int i = 0; i < groundList.Count; i++)
         {
             groundList[i].gameObject.GetComponent<MeshRenderer>().material.color = GameColorManager.Instance.GetStartColor();
-            SetCurrentGround();
         }
+
+        SetCurrentGround();
     }
 
     private void ChangeGroundColor()
@@ -58,13 +75,19 @@ public class Grounds : MonoBehaviour
 
     private void SetCurrentGround()
     {
-        var phaseIndex = GameManager.Instance.currentPhaseIndex;
+        var phaseIndex = GameManager.Instance.GetPhaseIndex();
         currentGround = groundList[phaseIndex];
     }
 
     public Transform GetCurrentGround()
     {
         return currentGround;
+    }
+
+    public Transform GetSpawnPosition()
+    {
+        spawnPosition = currentGround.GetChild(0);
+        return spawnPosition;
     }
 
     private float GetRandomTime()

@@ -16,6 +16,9 @@ public class SpikeLog : MonoBehaviour
     [SerializeField] private int maxDecreaseScore;
 
     private int decreasedScore;
+
+    private Vector3 movementDirection;
+    private Vector3 spikeLogRotation;
     private void Awake()
     {
         colorManager = FindObjectOfType<GameColorManager>();
@@ -23,7 +26,8 @@ public class SpikeLog : MonoBehaviour
     void Start()
     {
         SetRandomColor();
-        SetRandomDecreaseScore();
+        SetSpikeRotation(spikeLogRotation);
+        GetRandomDecreaseScore();
     }
 
     private void SetRandomColor()
@@ -40,15 +44,21 @@ public class SpikeLog : MonoBehaviour
             spikeMaterials[spikeIndex].color = Color.black;
         }
     }
-
-    private void SetRandomDecreaseScore()
-    {
-        decreasedScore = UnityEngine.Random.Range(minDecreaseScore, maxDecreaseScore);
-    }
-
     private void Update()
     {
-        transform.Translate(transform.TransformDirection(transform.forward) * movementSpeed * Time.deltaTime);
+        SpikeMovement(movementDirection);
+    }
+
+    private void SetSpikeRotation(Vector3 rotation)
+    {
+        spikeLogRotation = rotation;
+        transform.Rotate(spikeLogRotation);
+    }
+
+    public void SpikeMovement(Vector3 direction)
+    {
+        movementDirection = direction;
+        transform.Translate(direction * movementSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -58,6 +68,11 @@ public class SpikeLog : MonoBehaviour
             Debug.Log("Hit the Player");
             OnHitPlayer?.Invoke(decreasedScore);
         }
+    }
+    private int GetRandomDecreaseScore()
+    {
+        decreasedScore = UnityEngine.Random.Range(minDecreaseScore, maxDecreaseScore);
+        return decreasedScore;
     }
 
 }

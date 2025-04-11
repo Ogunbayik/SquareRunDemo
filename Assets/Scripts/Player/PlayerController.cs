@@ -15,13 +15,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float runSpeed;
     [SerializeField] private float maxAfkTime;
     [SerializeField] private float maxStamina;
+    [SerializeField] private float teleportDelayTime;
 
+    private float initTeleportDelayTime;
     private float afkTimer;
     private float currentStamina;
-
+   
     private bool isRunning;
     private bool isWalking;
     private bool isTired;
+    [SerializeField] private bool isTeleporting;
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -33,16 +36,17 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         currentStamina = maxStamina;
+        initTeleportDelayTime = teleportDelayTime;
         afkTimer = maxAfkTime;
         skinnedMeshRenderer.material.color = GameColorManager.Instance.GetStartColor();
     }
     private void OnEnable()
     {
-        GameManager.OnTeleport += Teleport;
+        ScoreManager.OnPassedPhase += PlayerIsTeleporting;
     }
     private void OnDisable()
     {
-        GameManager.OnTeleport -= Teleport;
+        ScoreManager.OnPassedPhase -= PlayerIsTeleporting;
     }
     void Update()
     {
@@ -84,7 +88,8 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerIdle()
     {
-        CheckPlayerAfk();
+        if (GameManager.Instance.currentState == GameManager.GameStates.InGame)
+            CheckPlayerAfk();
 
         animationController.ActivateWalkAnimation(false);
         animationController.ActivateRunAnimation(false);
@@ -93,7 +98,6 @@ public class PlayerController : MonoBehaviour
     private void PlayerWalking()
     {
         ResetSadAnimation();
-
         Movement();
     }
 
@@ -138,7 +142,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Movement()
     {
-        var movementDirection = GameManager.Instance.GetMovementDirectionNormalized();
+        var movementDirection = GameManager.Instance.GetPlayerMovementDirection();
 
         var movementSpeed = stateController.GetCurrentState() switch
         {
@@ -151,7 +155,7 @@ public class PlayerController : MonoBehaviour
     }
     private bool IsWalking()
     {
-        var movementDirection = GameManager.Instance.GetMovementDirectionNormalized();
+        var movementDirection = GameManager.Instance.GetPlayerMovementDirection();
         animationController.ActivateWalkAnimation(isWalking);
         return isWalking = movementDirection != Vector3.zero;
     }
@@ -172,14 +176,23 @@ public class PlayerController : MonoBehaviour
         return isRunning;
     }
 
-    private void Teleport()
+    private void PlayerIsTeleporting()
     {
-        var teleportPosition = colorfulGrounds.GetNextColorfulGround();
-
-        //Add animation delay timer
-        transform.position = teleportPosition.position;
+        isTeleporting = true;
+        StartCoroutine(nameof(TeleportNextArea));
     }
 
+    private IEnumerator TeleportNextArea()
+    {
+        while (isTeleporting)
+        {
+            var teleportPosition = colorfulGrounds.GetNextColorfulGround();
+            yield return new WaitForSeconds(teleportDelayTime);
+            isTeleporting = false;
+            transform.position = teleportPosition.position;
+            teleportDelayTime = initTeleportDelayTime;
+        }
+    }
     private void ResetSadAnimation()
     {
         animationController.ActivateSadAnimation(false);

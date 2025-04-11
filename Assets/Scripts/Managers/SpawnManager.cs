@@ -6,9 +6,13 @@ public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager Instance;
 
-    [Header("Settings")]
+    private Grounds grounds;
+
+    [Header("Spawn Settings")]
     [SerializeField] private GameObject spikePrefab;
     [SerializeField] private float maxSpawnTimer;
+
+    private Vector3 spikeRotation;
 
     private float spawnTimer;
     private void Awake()
@@ -23,13 +27,20 @@ public class SpawnManager : MonoBehaviour
             Instance = this;
         }
         #endregion
+
+        grounds = GameObject.FindObjectOfType<Grounds>();
     }
     void Start()
     {
         ResetSpawning();
+        SetSpikeRotation(spikeRotation);
     }
 
     void Update()
+    {
+        SpawnActivation();
+    }
+    private void SpawnActivation()
     {
         if (GameManager.Instance.currentState == GameManager.GameStates.InGame)
             SpawnSpikes();
@@ -42,9 +53,23 @@ public class SpawnManager : MonoBehaviour
         spawnTimer -= Time.deltaTime;
         if (spawnTimer <= 0)
         {
-            var log = Instantiate(spikePrefab);
+            var spikeLog = Instantiate(spikePrefab);
+            var movementDirection = spikeLog.transform.forward;
+
+            spikeLog.transform.position = grounds.GetSpawnPosition().position;
+            spikeLog.transform.Rotate(GetSpikeRotation());
+            spikeLog.GetComponent<SpikeLog>().SpikeMovement(movementDirection);
             spawnTimer = maxSpawnTimer;
         }
+    }
+    public void SetSpikeRotation(Vector3 desiredRotation)
+    {
+        spikeRotation = desiredRotation;
+    }
+
+    public Vector3 GetSpikeRotation()
+    {
+        return spikeRotation;
     }
 
     public void ResetSpawning()
