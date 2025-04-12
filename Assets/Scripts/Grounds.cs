@@ -9,6 +9,7 @@ public class Grounds : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float minChangeTime;
     [SerializeField] private float maxChangeTime;
+    private bool xDirection;
 
     private Transform currentGround;
     private Transform spawnPosition;
@@ -52,9 +53,11 @@ public class Grounds : MonoBehaviour
         for (int i = 0; i < groundList.Count; i++)
         {
             groundList[i].gameObject.GetComponent<MeshRenderer>().material.color = GameColorManager.Instance.GetStartColor();
+            xDirection = false;
         }
 
-        SetCurrentGround();
+        currentGround = groundList[0];
+        spawnPosition = currentGround.GetChild(0);
     }
 
     private void ChangeGroundColor()
@@ -77,6 +80,7 @@ public class Grounds : MonoBehaviour
     {
         var phaseIndex = GameManager.Instance.GetPhaseIndex();
         currentGround = groundList[phaseIndex];
+        xDirection = !xDirection;
     }
 
     public Transform GetCurrentGround()
@@ -88,6 +92,11 @@ public class Grounds : MonoBehaviour
     {
         spawnPosition = currentGround.GetChild(0);
         return spawnPosition;
+    }
+
+    public bool IsDirectionX()
+    {
+        return xDirection;
     }
 
     private float GetRandomTime()
