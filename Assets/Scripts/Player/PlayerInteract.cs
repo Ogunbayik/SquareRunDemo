@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
+    [Header("Interact Settings")]
     [SerializeField] private KeyCode interactButton;
 
     private void OnTriggerStay(Collider other)

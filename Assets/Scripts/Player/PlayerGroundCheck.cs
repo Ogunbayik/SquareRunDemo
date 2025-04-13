@@ -13,8 +13,10 @@ public class PlayerGroundCheck : MonoBehaviour
         Decreased
     }
 
+    [HideInInspector]
     public PlayerMode currentMode;
 
+    [Header("Check Settings")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float checkRadius;
 
@@ -24,20 +26,6 @@ public class PlayerGroundCheck : MonoBehaviour
         currentMode = PlayerMode.Normal;
         grounds = GameObject.FindObjectOfType<Grounds>();
     }
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    var colorfulGround = collision.gameObject.TryGetComponent<Colorful>(out Colorful colorful);
-    //    var colorfulIndex = colorful.GetColorfulGroundIndex();
-    //    var phaseIndex = GameManager.Instance.currentPhaseIndex;
-
-    //    if (colorfulGround)
-    //    {
-    //        if (phaseIndex < colorfulIndex)
-    //        {
-    //            OnPassPhase?.Invoke();
-    //        }
-    //    }
-    //}
     private void Update()
     {
         CheckGround();

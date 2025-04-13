@@ -28,10 +28,10 @@ public class GameManager : MonoBehaviour
     [Header("Game Settings")]
     public GamePhase currentPhase;
     public GameStates currentState;
-
+    [Header("Delay Settings")]
     [SerializeField] private float delayTeleporting;
     [SerializeField] private float delayNextState;
-
+    [Header("Rotation Settings")]
     [SerializeField] private int spikeRotationY;
 
     private int phaseIndex;
@@ -62,7 +62,6 @@ public class GameManager : MonoBehaviour
         currentState = GameStates.GameStart;
 
         initialDelayTime = delayNextState;
-        spikeRotation = new Vector3(0f, spikeRotationY, 0f);
     }
     private void OnEnable()
     {
@@ -112,41 +111,42 @@ public class GameManager : MonoBehaviour
                 currentPhase = GamePhase.FirstPhase;
                 playerMovementDirection = new Vector3(horizontalInput, 0f, verticalInput);
 
-                spikeRotation = new Vector3(0f, 180f, 0f);
-                SpawnManager.Instance.SetSpikeRotation(spikeRotation);
+                var firstPhaseRotation = new Vector3(0f, 180f, 0f);
+                SetSpikeRotation(firstPhaseRotation);
                 break;
             case 1:
                 currentPhase = GamePhase.SecondPhase;
                 playerMovementDirection = new Vector3(verticalInput, 0f, -horizontalInput);
 
-                spikeRotation = new Vector3(0f, 270f, 0f);
-                SpawnManager.Instance.SetSpikeRotation(spikeRotation);
+                var secondPhaseRotation = new Vector3(0f, 270f, 0f);
+                SetSpikeRotation(secondPhaseRotation);
                 break;
             case 2:
                 currentPhase = GamePhase.ThirdPhase;
                 playerMovementDirection = new Vector3(-horizontalInput, 0f, -verticalInput);
 
-                spikeRotation = new Vector3(0f, 0f, 0f);
-                SpawnManager.Instance.SetSpikeRotation(spikeRotation);
+                var thirdPhaseRotation = new Vector3(0f, 0f, 0f);
+                SetSpikeRotation(thirdPhaseRotation);
                 break;
             case 3:
                 currentPhase = GamePhase.LastPhase;
                 playerMovementDirection = new Vector3(-verticalInput, 0f, horizontalInput);
 
-                spikeRotation = new Vector3(0f, 90f, 0f);
-                SpawnManager.Instance.SetSpikeRotation(spikeRotation);
+                var lastPhaseRotation = new Vector3(0f, 90f, 0f);
+                SetSpikeRotation(lastPhaseRotation);
                 break;
         }
     }
 
-    //private void SetSpikeRotation()
-    //{
-    //    var spikeAddRotation = 90f;
-    //    spikeRotation = new Vector3(0f, spikeRotation.y + spikeAddRotation, 0f);
+    private void SetSpikeRotation(Vector3 rotation)
+    {
+        spikeRotation = rotation;
+    }
 
-    //    if (spikeRotationY == 360)
-    //        spikeRotationY = 0;
-    //}
+    public Vector3 GetSpikeRotation()
+    {
+        return spikeRotation;
+    }
     private void PlayerIsStopped()
     {
         if (currentState == GameStates.GameStart || currentState == GameStates.InGame)

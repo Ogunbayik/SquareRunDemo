@@ -10,12 +10,13 @@ public class PlayerController : MonoBehaviour
     private PlayerAnimationController animationController;
     private ColorfulGrounds colorfulGrounds;
 
-    [Header("Settings")]
+    [Header("Movement Speed")]
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
-    [SerializeField] private float maxAfkTime;
+    [Header("Timer Settings")]
     [SerializeField] private float maxStamina;
     [SerializeField] private float teleportDelayTime;
+    [SerializeField] private float afkCountDown;
 
     private float initTeleportDelayTime;
     private float afkTimer;
@@ -24,7 +25,7 @@ public class PlayerController : MonoBehaviour
     private bool isRunning;
     private bool isWalking;
     private bool isTired;
-    [SerializeField] private bool isTeleporting;
+    private bool isTeleporting;
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -37,7 +38,7 @@ public class PlayerController : MonoBehaviour
     {
         currentStamina = maxStamina;
         initTeleportDelayTime = teleportDelayTime;
-        afkTimer = maxAfkTime;
+        afkTimer = afkCountDown;
         skinnedMeshRenderer.material.color = GameColorManager.Instance.GetStartColor();
     }
     private void OnEnable()
@@ -196,7 +197,7 @@ public class PlayerController : MonoBehaviour
     private void ResetSadAnimation()
     {
         animationController.ActivateSadAnimation(false);
-        afkTimer = maxAfkTime;
+        afkTimer = afkCountDown;
     }
 
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Cabine : MonoBehaviour, IInteractable
 {
-    [Header("Settings")]
+    [Header("Color Settings")]
     [SerializeField] private Color cabineColor;
 
     private GameColorManager colorManager;

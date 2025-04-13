@@ -11,6 +11,7 @@ public class SpikeLog : MonoBehaviour
 
     private Material[] spikeMaterials;
 
+    [Header("Settings")]
     [SerializeField] private float movementSpeed;
     [SerializeField] private int minDecreaseScore;
     [SerializeField] private int maxDecreaseScore;

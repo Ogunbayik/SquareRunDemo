@@ -9,7 +9,7 @@ public class Gem : MonoBehaviour
 
     private Animator animator;
 
-    [Header("Settings")]
+    [Header("Score Settings")]
     [SerializeField] private int gemScore;
 
     private void Awake()

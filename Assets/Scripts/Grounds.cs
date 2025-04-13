@@ -6,7 +6,7 @@ public class Grounds : MonoBehaviour
 {
     [SerializeField] private List<Transform> groundList = new List<Transform>();
 
-    [Header("Settings")]
+    [Header("Timer Settings")]
     [SerializeField] private float minChangeTime;
     [SerializeField] private float maxChangeTime;
     private bool xDirection;

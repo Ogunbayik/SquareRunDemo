@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ColorfulGrounds : MonoBehaviour
 {
-    [SerializeField] private List<Transform> colorfulGroundList = new List<Transform>();
+    private List<Transform> colorfulGroundList = new List<Transform>();
 
     private Transform nextColorfulGround;
     private void Start()

@@ -11,9 +11,10 @@ public class SpawnManager : MonoBehaviour
     [Header("Spawn Prefabs")]
     [SerializeField] private GameObject spikePrefab;
     [SerializeField] private GameObject gemPrefab;
-    [Header("Spawn Ranges")]
+    [Header("Spawn Range")]
     [SerializeField] private float horizontalSpawnRange;
     [SerializeField] private float verticalSpawnRange;
+    [Header("Spawn Time")]
     [SerializeField] private float spawnCountdown;
 
     private Vector3 spikeRotation;
@@ -41,7 +42,6 @@ public class SpawnManager : MonoBehaviour
     void Start()
     {
         ResetSpawning();
-        SetSpikeRotation(spikeRotation);
     }
 
     void Update()
@@ -68,9 +68,10 @@ public class SpawnManager : MonoBehaviour
         {
             var spikeLog = Instantiate(spikePrefab);
             var movementDirection = spikeLog.transform.forward;
+            var spikeRotation = GameManager.Instance.GetSpikeRotation();
 
             spikeLog.transform.position = RandomSpikePosition();
-            spikeLog.transform.Rotate(GetSpikeRotation());
+            spikeLog.transform.Rotate(spikeRotation);
             spikeLog.GetComponent<SpikeLog>().SpikeMovement(movementDirection);
             spawnTimer = spawnCountdown;
         }
@@ -134,16 +135,6 @@ public class SpawnManager : MonoBehaviour
         }
 
         return randomGemPosition;
-    }
-
-    public void SetSpikeRotation(Vector3 desiredRotation)
-    {
-        spikeRotation = desiredRotation;
-    }
-
-    public Vector3 GetSpikeRotation()
-    {
-        return spikeRotation;
     }
 
     public void ResetSpawning()
