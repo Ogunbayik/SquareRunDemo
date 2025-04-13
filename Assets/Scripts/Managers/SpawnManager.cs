@@ -8,15 +8,21 @@ public class SpawnManager : MonoBehaviour
 
     private Grounds grounds;
 
-    [Header("Spawn Settings")]
+    [Header("Spawn Prefabs")]
     [SerializeField] private GameObject spikePrefab;
-    [SerializeField] private float maxSpawnTimer;
-    [SerializeField] private float spawnRange;
+    [SerializeField] private GameObject gemPrefab;
+    [Header("Spawn Ranges")]
+    [SerializeField] private float horizontalSpawnRange;
+    [SerializeField] private float verticalSpawnRange;
+    [SerializeField] private float spawnCountdown;
 
     private Vector3 spikeRotation;
-    private Vector3 randomPosition;
+    private Vector3 randomSpikePosition;
+    private Vector3 randomGemPosition;
 
     private float spawnTimer;
+
+    private bool canSpawnGem = true;
     private void Awake()
     {
         #region Singleton
@@ -45,7 +51,12 @@ public class SpawnManager : MonoBehaviour
     private void SpawnActivation()
     {
         if (GameManager.Instance.currentState == GameManager.GameStates.InGame)
+        {
             SpawnSpikes();
+
+            if (canSpawnGem)
+                SpawnRandomGem();
+        }
         else
             ResetSpawning();
     }
@@ -59,10 +70,9 @@ public class SpawnManager : MonoBehaviour
             var movementDirection = spikeLog.transform.forward;
 
             spikeLog.transform.position = RandomSpikePosition();
-            Debug.Log(RandomSpikePosition());
             spikeLog.transform.Rotate(GetSpikeRotation());
             spikeLog.GetComponent<SpikeLog>().SpikeMovement(movementDirection);
-            spawnTimer = maxSpawnTimer;
+            spawnTimer = spawnCountdown;
         }
     }
 
@@ -73,21 +83,57 @@ public class SpawnManager : MonoBehaviour
         if (!spawnDirectionX)
         {
             var spawnPoint = grounds.GetSpawnPosition();
-            var maximumX = spawnPoint.position.x + spawnRange;
-            var minimumX = spawnPoint.position.x - spawnRange;
+            var maximumX = spawnPoint.position.x + horizontalSpawnRange;
+            var minimumX = spawnPoint.position.x - horizontalSpawnRange;
             var randomPositionX = Random.Range(minimumX, maximumX);
-            randomPosition = new Vector3(randomPositionX, spawnPoint.position.y, spawnPoint.position.z);
+            randomSpikePosition = new Vector3(randomPositionX, spawnPoint.position.y, spawnPoint.position.z);
         }
         else
         {
             var spawnPoint = grounds.GetSpawnPosition();
-            var maximumZ = spawnPoint.position.z + spawnRange;
-            var minimumZ = spawnPoint.position.z - spawnRange;
+            var maximumZ = spawnPoint.position.z + horizontalSpawnRange;
+            var minimumZ = spawnPoint.position.z - horizontalSpawnRange;
             var randomPositionZ = Random.Range(minimumZ, maximumZ);
-            randomPosition = new Vector3(spawnPoint.position.x, spawnPoint.position.y, randomPositionZ);
+            randomSpikePosition = new Vector3(spawnPoint.position.x, spawnPoint.position.y, randomPositionZ);
         }
 
-        return randomPosition;
+        return randomSpikePosition;
+    }
+    private void SpawnRandomGem()
+    {
+        var gem = Instantiate(gemPrefab);
+        gem.transform.position = RandomGemPosition();
+        canSpawnGem = false;
+    }
+
+    private Vector3 RandomGemPosition()
+    {
+        var spawnDirectionX = grounds.IsDirectionX();
+
+        if(!spawnDirectionX)
+        {
+            var currentGround = grounds.GetCurrentGround();
+            var minimumX = currentGround.position.x - horizontalSpawnRange;
+            var maximumX = currentGround.position.x + horizontalSpawnRange;
+            var minimumZ = currentGround.transform.position.z - verticalSpawnRange;
+            var maximumZ = currentGround.transform.position.z + verticalSpawnRange;
+            var randomPositionX = Random.Range(minimumX, maximumX);
+            var randomPositionZ = Random.Range(minimumZ, maximumZ);
+            randomGemPosition = new Vector3(randomPositionX, 0f, randomPositionZ);
+        }
+        else
+        {
+            var currentGround = grounds.GetCurrentGround();
+            var minimumX = currentGround.position.x - verticalSpawnRange;
+            var maximumX = currentGround.position.x + verticalSpawnRange;
+            var minimumZ = currentGround.transform.position.z - horizontalSpawnRange;
+            var maximumZ = currentGround.transform.position.z + horizontalSpawnRange;
+            var randomPositionX = Random.Range(minimumX, maximumX);
+            var randomPositionZ = Random.Range(minimumZ, maximumZ);
+            randomGemPosition = new Vector3(randomPositionX, 0f, randomPositionZ);
+        }
+
+        return randomGemPosition;
     }
 
     public void SetSpikeRotation(Vector3 desiredRotation)
@@ -102,6 +148,6 @@ public class SpawnManager : MonoBehaviour
 
     public void ResetSpawning()
     {
-        spawnTimer = maxSpawnTimer;
+        spawnTimer = spawnCountdown;
     }
 }
