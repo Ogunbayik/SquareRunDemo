@@ -30,6 +30,23 @@ public class SpikeLog : MonoBehaviour
         SetSpikeRotation(spikeLogRotation);
         GetRandomDecreaseScore();
     }
+    private void OnEnable()
+    {
+        EventManager.OnPlayerHitSpike += EventManager_OnPlayerHitSpike;
+    }
+
+    private void EventManager_OnPlayerHitSpike(PlayerController player, SpikeLog spike)
+    {
+        var playerColor = player.GetPlayerColor();
+        if(playerColor == spikeMaterials[0].color)
+        {
+            Debug.Log("Player and Spike colors are same");
+        }
+        else
+        {
+            Debug.Log("Player and Spike are not same Color!!");
+        }
+    }
 
     private void SetRandomColor()
     {
@@ -68,6 +85,7 @@ public class SpikeLog : MonoBehaviour
         {
             Debug.Log("Hit the Player");
             OnHitPlayer?.Invoke(decreasedScore);
+            EventManager_OnPlayerHitSpike(player, this);
         }
     }
     private int GetRandomDecreaseScore()

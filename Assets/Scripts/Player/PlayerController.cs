@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
     private bool isWalking;
     private bool isTired;
     private bool isTeleporting;
+
+    private Color playerColor;
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour
         initTeleportDelayTime = teleportDelayTime;
         afkTimer = afkCountDown;
         skinnedMeshRenderer.material.color = GameColorManager.Instance.GetStartColor();
+        playerColor = skinnedMeshRenderer.material.color;
     }
     private void OnEnable()
     {
@@ -200,7 +203,10 @@ public class PlayerController : MonoBehaviour
         afkTimer = afkCountDown;
     }
 
-
+    public Color GetPlayerColor()
+    {
+        return playerColor;
+    }
 
 
 
