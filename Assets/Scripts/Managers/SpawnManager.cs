@@ -17,7 +17,6 @@ public class SpawnManager : MonoBehaviour
     [Header("Spawn Time")]
     [SerializeField] private float spawnCountdown;
 
-    private Vector3 spikeRotation;
     private Vector3 randomSpikePosition;
     private Vector3 randomGemPosition;
 
@@ -48,6 +47,21 @@ public class SpawnManager : MonoBehaviour
     {
         SpawnActivation();
     }
+
+    private void OnEnable()
+    {
+        Gem.OnPlayerCollectedAnyGem += Gem_OnPlayerCollectedAnyGem;
+    }
+    private void OnDisable()
+    {
+        Gem.OnPlayerCollectedAnyGem -= Gem_OnPlayerCollectedAnyGem;
+    }
+
+    private void Gem_OnPlayerCollectedAnyGem()
+    {
+        canSpawnGem = true;
+    }
+
     private void SpawnActivation()
     {
         if (GameManager.Instance.currentState == GameManager.GameStates.InGame)
@@ -55,7 +69,7 @@ public class SpawnManager : MonoBehaviour
             SpawnSpikes();
 
             if (canSpawnGem)
-                SpawnRandomGem();
+                SpawnGem();
         }
         else
             ResetSpawning();
@@ -100,7 +114,7 @@ public class SpawnManager : MonoBehaviour
 
         return randomSpikePosition;
     }
-    private void SpawnRandomGem()
+    private void SpawnGem()
     {
         var gem = Instantiate(gemPrefab);
         gem.transform.position = RandomGemPosition();

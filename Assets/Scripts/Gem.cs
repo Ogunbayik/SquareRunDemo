@@ -5,24 +5,38 @@ using System;
 
 public class Gem : MonoBehaviour
 {
-    public static Action<int> OnGemCollected;
+    public static event Action OnPlayerCollectedAnyGem;
+    public static event Action<Gem,PlayerController> OnPlayerCollectGem;
 
     private Animator animator;
 
     [Header("Score Settings")]
     [SerializeField] private int gemScore;
-
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
     }
+    private void OnEnable()
+    {
+        OnPlayerCollectedAnyGem += Gem_OnPlayerCollectedAnyGem;
+    }
+    private void OnDisable()
+    {
+        OnPlayerCollectedAnyGem -= Gem_OnPlayerCollectedAnyGem;
+    }
+
+    private void Gem_OnPlayerCollectedAnyGem()
+    {
+        animator.SetTrigger(Consts.GemAnimationParameter.COLLECT_PARAMETER);
+        SelfDestruction();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            OnGemCollected?.Invoke(gemScore);
-            animator.SetTrigger(Consts.GemAnimationParameter.COLLECT_PARAMETER);
-            SelfDestruction();
+            OnPlayerCollectGem?.Invoke(this, player);
+            OnPlayerCollectedAnyGem?.Invoke();
         }
     }
 
@@ -31,5 +45,12 @@ public class Gem : MonoBehaviour
         var destructionTime = 0.3f;
         Destroy(this.gameObject, destructionTime);
     }
+
+    public int GetGemScore()
+    {
+        return gemScore;
+    }
+
+
 
 }

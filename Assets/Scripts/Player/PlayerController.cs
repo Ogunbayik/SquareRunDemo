@@ -6,24 +6,25 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody playerRb;
     private SkinnedMeshRenderer skinnedMeshRenderer;
-    private PlayerStateController stateController;
     private PlayerAnimationController animationController;
     private ColorfulGrounds colorfulGrounds;
 
     [Header("Movement Speed")]
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
+    [SerializeField] private KeyCode runKey;
     [Header("Timer Settings")]
     [SerializeField] private float maxStamina;
     [SerializeField] private float teleportDelayTime;
     [SerializeField] private float afkCountDown;
 
+    private PlayerStates currentState;
+    private PlayerStates newState;
+
     private float initTeleportDelayTime;
     private float afkTimer;
     private float currentStamina;
    
-    private bool isRunning;
-    private bool isWalking;
     private bool isTired;
     private bool isTeleporting;
 
@@ -31,7 +32,6 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody>();
-        stateController = GetComponent<PlayerStateController>();
         animationController = GetComponentInChildren<PlayerAnimationController>();
         skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
         colorfulGrounds = GameObject.FindObjectOfType<ColorfulGrounds>();
@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
         afkTimer = afkCountDown;
         skinnedMeshRenderer.material.color = GameColorManager.Instance.GetStartColor();
         playerColor = skinnedMeshRenderer.material.color;
+
     }
     private void OnEnable()
     {
@@ -54,37 +55,48 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
-        SetStates();
-        PlayerBehaviour();
         CheckStamina();
+        SetPlayerStates();
+        PlayerBehaviour();
     }
-    private void SetStates()
+
+    private void SetPlayerStates()
     {
-        if (IsWalking())
+        var movementDirection = GameManager.Instance.GetPlayerMovementDirection();
+
+        if (movementDirection.magnitude > 0.1f)
         {
-            if (!IsRunning())
-                stateController.ChangeState(PlayerStates.Walking);
+            if (!Input.GetKey(runKey))
+            {
+                PlayerStateManager.Instance.ChangeState(PlayerStateManager.PlayerStates.Walking);
+            }
             else
-                stateController.ChangeState(PlayerStates.Running);
+            {
+                if (!isTired)
+                    PlayerStateManager.Instance.ChangeState(PlayerStateManager.PlayerStates.Running);
+                else
+                    PlayerStateManager.Instance.ChangeState(PlayerStateManager.PlayerStates.Walking);
+            }
         }
         else
         {
-            stateController.ChangeState(PlayerStates.Idle);
+            PlayerStateManager.Instance.ChangeState(PlayerStateManager.PlayerStates.Idle);
         }
     }
+
     private void PlayerBehaviour()
     {
-        var currentState = stateController.GetCurrentState();
+        var currentState = PlayerStateManager.Instance.currentState;
 
-        switch(currentState)
+        switch (currentState)
         {
-            case PlayerStates.Idle:
+            case PlayerStateManager.PlayerStates.Idle:
                 PlayerIdle();
                 break;
-            case PlayerStates.Walking:
+            case PlayerStateManager.PlayerStates.Walking:
                 PlayerWalking();
                 break;
-            case PlayerStates.Running:
+            case PlayerStateManager.PlayerStates.Running:
                 PlayerRunning();
                 break;
         }
@@ -94,9 +106,6 @@ public class PlayerController : MonoBehaviour
     {
         if (GameManager.Instance.currentState == GameManager.GameStates.InGame)
             CheckPlayerAfk();
-
-        animationController.ActivateWalkAnimation(false);
-        animationController.ActivateRunAnimation(false);
     }
 
     private void PlayerWalking()
@@ -108,12 +117,14 @@ public class PlayerController : MonoBehaviour
     private void PlayerRunning()
     {
         ResetSadAnimation();
-        Movement();
+
+        if (!isTired)
+            Movement();
     }
 
     private void CheckStamina()
     {
-        if (IsRunning())
+        if (!isTired)
         {
             currentStamina -= Time.deltaTime;
 
@@ -148,38 +159,15 @@ public class PlayerController : MonoBehaviour
     {
         var movementDirection = GameManager.Instance.GetPlayerMovementDirection();
 
-        var movementSpeed = stateController.GetCurrentState() switch
+        var movementSpeed = PlayerStateManager.Instance.currentState switch
         {
-            PlayerStates.Walking => walkSpeed,
-            PlayerStates.Running => runSpeed,
+            PlayerStateManager.PlayerStates.Walking => walkSpeed,
+            PlayerStateManager.PlayerStates.Running => runSpeed,
             _ => 0f
         };
 
         playerRb.velocity = movementDirection * movementSpeed;
     }
-    private bool IsWalking()
-    {
-        var movementDirection = GameManager.Instance.GetPlayerMovementDirection();
-        animationController.ActivateWalkAnimation(isWalking);
-        return isWalking = movementDirection != Vector3.zero;
-    }
-
-    private bool IsRunning()
-    {
-        if (!isTired)
-        {
-            isRunning = Input.GetKey(KeyCode.LeftShift);
-            animationController.ActivateRunAnimation(isRunning);
-        }
-        else
-        {
-            isRunning = false;
-            animationController.ActivateRunAnimation(isRunning);
-        }
-
-        return isRunning;
-    }
-
     private void PlayerIsTeleporting()
     {
         isTeleporting = true;
@@ -199,10 +187,12 @@ public class PlayerController : MonoBehaviour
     }
     private void ResetSadAnimation()
     {
-        animationController.ActivateSadAnimation(false);
-        afkTimer = afkCountDown;
+        if (afkTimer != afkCountDown)
+        {
+            animationController.ActivateSadAnimation(false);
+            afkTimer = afkCountDown;
+        }
     }
-
     public Color GetPlayerColor()
     {
         return playerColor;

@@ -5,7 +5,7 @@ using System;
 
 public class SpikeLog : MonoBehaviour
 {
-    public static Action<int> OnHitPlayer;
+    public static event Action<SpikeLog,PlayerController> OnSpikeHitPlayer;
 
     private GameColorManager colorManager;
 
@@ -28,26 +28,8 @@ public class SpikeLog : MonoBehaviour
     {
         SetRandomColor();
         SetSpikeRotation(spikeLogRotation);
-        GetRandomDecreaseScore();
+        SetRandomDecreaseScore();
     }
-    private void OnEnable()
-    {
-        EventManager.OnPlayerHitSpike += EventManager_OnPlayerHitSpike;
-    }
-
-    private void EventManager_OnPlayerHitSpike(PlayerController player, SpikeLog spike)
-    {
-        var playerColor = player.GetPlayerColor();
-        if(playerColor == spikeMaterials[0].color)
-        {
-            Debug.Log("Player and Spike colors are same");
-        }
-        else
-        {
-            Debug.Log("Player and Spike are not same Color!!");
-        }
-    }
-
     private void SetRandomColor()
     {
         spikeMaterials = gameObject.GetComponentInChildren<MeshRenderer>().materials;
@@ -84,13 +66,25 @@ public class SpikeLog : MonoBehaviour
         if(other.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
             Debug.Log("Hit the Player");
-            OnHitPlayer?.Invoke(decreasedScore);
-            EventManager_OnPlayerHitSpike(player, this);
+            OnSpikeHitPlayer?.Invoke(this, player);
+            Destroy(this.gameObject);
         }
     }
-    private int GetRandomDecreaseScore()
+    private void SetRandomDecreaseScore()
     {
         decreasedScore = UnityEngine.Random.Range(minDecreaseScore, maxDecreaseScore);
+    }
+
+    public Color GetSpikeColor()
+    {
+        var cylinderIndex = 0;
+        var spikeColor = spikeMaterials[cylinderIndex].color;
+
+        return spikeColor;
+    }
+
+    public int GetDecreaseScore()
+    {
         return decreasedScore;
     }
 
