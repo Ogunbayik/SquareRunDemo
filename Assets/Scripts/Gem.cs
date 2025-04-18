@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Gem : MonoBehaviour
+public class Gem : MonoBehaviour, ICollectable
 {
     public static event Action OnPlayerCollectedAnyGem;
-    public static event Action<Gem,PlayerController> OnPlayerCollectGem;
+    public static event Action<Gem,PlayerInteraction> OnPlayerCollectGem;
 
     private Animator animator;
+    private Collider gemCollider;
 
     [Header("Score Settings")]
     [SerializeField] private int gemScore;
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
+        gemCollider = GetComponent<Collider>();
     }
     private void OnEnable()
     {
@@ -27,30 +29,22 @@ public class Gem : MonoBehaviour
 
     private void Gem_OnPlayerCollectedAnyGem()
     {
+        gemCollider.enabled = false;
         animator.SetTrigger(Consts.GemAnimationParameter.COLLECT_PARAMETER);
         SelfDestruction();
     }
-
-    private void OnTriggerEnter(Collider other)
+    public void SelfDestruction()
     {
-        if(other.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
-        {
-            OnPlayerCollectGem?.Invoke(this, player);
-            OnPlayerCollectedAnyGem?.Invoke();
-        }
-    }
-
-    private void SelfDestruction()
-    {
-        var destructionTime = 0.3f;
+        var destructionTime = 2f;
         Destroy(this.gameObject, destructionTime);
     }
-
+    public void Collect(PlayerInteraction player)
+    {
+        OnPlayerCollectedAnyGem?.Invoke();
+        OnPlayerCollectGem?.Invoke(this, player);
+    }
     public int GetGemScore()
     {
         return gemScore;
     }
-
-
-
 }

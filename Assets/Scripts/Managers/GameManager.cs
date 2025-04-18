@@ -5,8 +5,15 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
+    private PlayerController playerController;
+
     public static Action OnTeleporting;
     public static Action OnTeleported;
+
+    public static Action OnPhaseStart;
+    public static Action OnPlayerWinGame;
+    public static Action OnPlayerGameOver;
+
     public enum GameStates
     {
         GameStart,
@@ -36,7 +43,7 @@ public class GameManager : MonoBehaviour
 
     private int phaseIndex;
 
-    private Vector3 playerMovementDirection;
+    private Vector3 gameDirection;
     private Vector3 spikeRotation;
 
     private float horizontalInput;
@@ -55,6 +62,8 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
         #endregion
+
+        playerController = GameObject.FindObjectOfType<PlayerController>();
     }
     void Start()
     {
@@ -93,7 +102,7 @@ public class GameManager : MonoBehaviour
                 //Add lose animation for player.
                 break;
             case GameStates.PassedPhase:
-
+                //Add some particles..
                 break;
             case GameStates.GameWin:
                 //Add win animation for player.
@@ -109,28 +118,28 @@ public class GameManager : MonoBehaviour
         {
             case 0:
                 currentPhase = GamePhase.FirstPhase;
-                playerMovementDirection = new Vector3(horizontalInput, 0f, verticalInput);
+                playerController.SetPlayerDirection(new Vector3(horizontalInput, 0f, verticalInput));
 
                 var firstPhaseRotation = new Vector3(0f, 180f, 0f);
                 SetSpikeRotation(firstPhaseRotation);
                 break;
             case 1:
                 currentPhase = GamePhase.SecondPhase;
-                playerMovementDirection = new Vector3(verticalInput, 0f, -horizontalInput);
+                playerController.SetPlayerDirection(new Vector3(verticalInput, 0f, -horizontalInput));
 
                 var secondPhaseRotation = new Vector3(0f, 270f, 0f);
                 SetSpikeRotation(secondPhaseRotation);
                 break;
             case 2:
                 currentPhase = GamePhase.ThirdPhase;
-                playerMovementDirection = new Vector3(-horizontalInput, 0f, -verticalInput);
+                playerController.SetPlayerDirection(new Vector3(-horizontalInput, 0f, -verticalInput));
 
                 var thirdPhaseRotation = new Vector3(0f, 0f, 0f);
                 SetSpikeRotation(thirdPhaseRotation);
                 break;
             case 3:
                 currentPhase = GamePhase.LastPhase;
-                playerMovementDirection = new Vector3(-verticalInput, 0f, horizontalInput);
+                playerController.SetPlayerDirection(new Vector3(-verticalInput, 0f, horizontalInput));
 
                 var lastPhaseRotation = new Vector3(0f, 90f, 0f);
                 SetSpikeRotation(lastPhaseRotation);
@@ -150,13 +159,13 @@ public class GameManager : MonoBehaviour
     private void PlayerIsStopped()
     {
         if (currentState == GameStates.GameStart || currentState == GameStates.InGame)
-            playerMovementDirection = playerMovementDirection.normalized;
+            gameDirection = gameDirection.normalized;
         else
-            playerMovementDirection = Vector3.zero;
+            gameDirection = Vector3.zero;
     }
     public Vector3 GetPlayerMovementDirection()
     {
-        return playerMovementDirection;
+        return gameDirection;
     }
 
     private void PlayerPassedPhase()

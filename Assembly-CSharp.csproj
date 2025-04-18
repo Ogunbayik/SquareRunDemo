@@ -63,19 +63,25 @@
     <Compile Include="Assets\Scripts\Player\PlayerGroundCheck.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IInteractable.cs" />
     <Compile Include="Assets\Scripts\Gem.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\ICollectable.cs" />
     <Compile Include="Assets\Scripts\Managers\SpawnManager.cs" />
     <Compile Include="Assets\Scripts\Environments\Cabine.cs" />
-    <Compile Include="Assets\Scripts\Player\PlayerStates.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Managers\ScoreManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerStateManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAnimationController.cs" />
     <Compile Include="Assets\Scripts\Managers\GameColorManager.cs" />
     <Compile Include="Assets\Scripts\Grounds.cs" />
-    <Compile Include="Assets\Scripts\Player\PlayerInteract.cs" />
-    <Compile Include="Assets\Scripts\CameraManager.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerInteraction.cs" />
+    <Compile Include="Assets\Scripts\Managers\CameraManager.cs" />
     <Compile Include="Assets\Scripts\ColorfulGrounds.cs" />
-    <Compile Include="Assets\Scripts\Player\PlayerStateManager.cs" />
+    <Compile Include="Assets\Scripts\Key.cs" />
+    <Compile Include="Assets\Scripts\Door.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\AssetStore\SineVFX\TranslucentCrystals\Resources\Shaders\SkyboxProceduralDesaturated.shader" />
+    <None Include="Assets\AssetStore\SineVFX\TranslucentCrystals\Resources\Shaders\Crystal.shader" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

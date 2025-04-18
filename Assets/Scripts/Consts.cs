@@ -22,5 +22,18 @@ public class Consts
     {
         public const string COLLECT_PARAMETER = "isCollected";
     }
+
+    public struct DoorAnimationParameter
+    {
+        public const string OPENING_PARAMETER = "isOpening";
+        public const string CLOSING_PARAMETER = "isClosing";
+        public const string OPENED_PARAMETER = "isOpened";
+        public const string CLOSED_PARAMETER = "isClosed";
+    }
+
+    public struct GameTags
+    {
+        public const string PHASE_START_TAG = "PhaseStart";
+    }
     
 }

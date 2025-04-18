@@ -45,8 +45,6 @@ public class PlayerStateManager : MonoBehaviour
 
         currentState = newState;
         OnStateChanged?.Invoke(previousState, currentState);
-
-        Debug.Log("Player State is changed " + previousState + " to " + currentState);
     }
 
     public PlayerStates GetCurrentState()

@@ -10,14 +10,13 @@ public class ScoreManager : MonoBehaviour
     public static Action OnPassedPhase;
 
     [Header("Settings")]
-    [SerializeField] private float maxCountdown;
-    [SerializeField] private int desiredScoreAdd;
+    [SerializeField] private float firstCountdown;
+    [SerializeField] private float repeatCountdown;
+    [SerializeField] private int addScore;
     [SerializeField] private int passScore;
 
-    private float countdownTimer;
-
-    private int gameScore = 10;
-    private int desiredGameScore;
+    private int gameScore;
+    private int gameOverScore;
     private void Awake()
     {
         #region Singleton
@@ -29,16 +28,18 @@ public class ScoreManager : MonoBehaviour
             Instance = this;
         #endregion
 
-        countdownTimer = maxCountdown;
-        desiredGameScore = 0;
-
-        InvokeRepeating(nameof(UpdateDesiredScore),maxCountdown, maxCountdown);
+        gameOverScore = 0;
     }
-    private void UpdateDesiredScore()
+    private void Start()
     {
-        desiredGameScore += desiredScoreAdd;
+        InvokeRepeating(nameof(UpdateGameOverScore), firstCountdown, repeatCountdown);
+    }
+    
+    private void UpdateGameOverScore()
+    {
+        gameOverScore += addScore;
 
-        if (desiredGameScore <= gameScore)
+        if (gameOverScore <= gameScore)
             return;
 
         CheckGameScore();
@@ -55,10 +56,9 @@ public class ScoreManager : MonoBehaviour
         SpikeLog.OnSpikeHitPlayer -= SpikeLog_OnSpikeHitPlayer;
     }
 
-    private void Gem_OnPlayerCollectGem(Gem gem, PlayerController player)
+    private void Gem_OnPlayerCollectGem(Gem gem, PlayerInteraction player)
     {
         gameScore += gem.GetGemScore();
-
         CheckGameScore();
     }
     private void SpikeLog_OnSpikeHitPlayer(SpikeLog spike, PlayerController player)
@@ -79,10 +79,10 @@ public class ScoreManager : MonoBehaviour
             var multiplyPassScore = 3;
             passScore *= multiplyPassScore;
         }
-        else if(gameScore < desiredGameScore)
+        else if(gameScore < gameOverScore)
         {
             Debug.Log("Game is over");
-            CancelInvoke(nameof(UpdateDesiredScore));
+            CancelInvoke(nameof(UpdateGameOverScore));
         }
     }
 

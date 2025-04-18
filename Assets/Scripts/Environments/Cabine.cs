@@ -21,7 +21,7 @@ public class Cabine : MonoBehaviour, IInteractable
         cabineRenderer.material.color = cabineColor;
     }
 
-    public void Interact(PlayerInteract player)
+    public void Interact(PlayerInteraction player)
     {
         var playerSkinnedMeshRenderer = player.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
         var playerColor = playerSkinnedMeshRenderer.material.color;
