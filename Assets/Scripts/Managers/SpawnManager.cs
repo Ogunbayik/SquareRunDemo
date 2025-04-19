@@ -15,12 +15,10 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private float horizontalSpawnRange;
     [SerializeField] private float verticalSpawnRange;
     [Header("Spawn Time")]
-    [SerializeField] private float spawnCountdown;
+    [SerializeField] private float spawnRepeatTime;
 
     private Vector3 randomSpikePosition;
     private Vector3 randomGemPosition;
-
-    private float spawnTimer;
 
     private bool canSpawnGem = true;
     private void Awake()
@@ -38,59 +36,39 @@ public class SpawnManager : MonoBehaviour
 
         grounds = GameObject.FindObjectOfType<Grounds>();
     }
-    void Start()
+    private void Update()
     {
-        ResetSpawning();
+        if (canSpawnGem)
+            SpawnGem();
     }
-
-    void Update()
-    {
-        SpawnActivation();
-    }
-
     private void OnEnable()
     {
+        GameManager.OnGamePhaseStart += GameManager_OnGamePhaseStart;
         Gem.OnPlayerCollectedAnyGem += Gem_OnPlayerCollectedAnyGem;
     }
     private void OnDisable()
     {
+        GameManager.OnGamePhaseStart -= GameManager_OnGamePhaseStart;
         Gem.OnPlayerCollectedAnyGem -= Gem_OnPlayerCollectedAnyGem;
     }
-
+    private void GameManager_OnGamePhaseStart()
+    {
+        var firstSpawnTime = 1f;
+        InvokeRepeating(nameof(SpawnSpikeInGame), firstSpawnTime, spawnRepeatTime);
+    }
     private void Gem_OnPlayerCollectedAnyGem()
     {
         canSpawnGem = true;
     }
 
-    private void SpawnActivation()
+    private void SpawnSpikeInGame()
     {
-        if (GameManager.Instance.currentState == GameManager.GameStates.InGame)
-        {
-            SpawnSpikes();
+        var spikelog = Instantiate(spikePrefab);
+        var spikeRotation = GameManager.Instance.GetSpikeRotation();
 
-            if (canSpawnGem)
-                SpawnGem();
-        }
-        else
-            ResetSpawning();
+        spikelog.transform.position = RandomSpikePosition();
+        spikelog.transform.Rotate(spikeRotation);
     }
-
-    private void SpawnSpikes()
-    {
-        spawnTimer -= Time.deltaTime;
-        if (spawnTimer <= 0)
-        {
-            var spikeLog = Instantiate(spikePrefab);
-            var movementDirection = spikeLog.transform.forward;
-            var spikeRotation = GameManager.Instance.GetSpikeRotation();
-
-            spikeLog.transform.position = RandomSpikePosition();
-            spikeLog.transform.Rotate(spikeRotation);
-            spikeLog.GetComponent<SpikeLog>().SpikeMovement(movementDirection);
-            spawnTimer = spawnCountdown;
-        }
-    }
-
     private Vector3 RandomSpikePosition()
     {
         var spawnDirectionX = grounds.IsDirectionX();
@@ -120,7 +98,6 @@ public class SpawnManager : MonoBehaviour
         gem.transform.position = RandomGemPosition();
         canSpawnGem = false;
     }
-
     private Vector3 RandomGemPosition()
     {
         var spawnDirectionX = grounds.IsDirectionX();
@@ -149,10 +126,5 @@ public class SpawnManager : MonoBehaviour
         }
 
         return randomGemPosition;
-    }
-
-    public void ResetSpawning()
-    {
-        spawnTimer = spawnCountdown;
     }
 }

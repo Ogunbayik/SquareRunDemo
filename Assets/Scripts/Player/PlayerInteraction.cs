@@ -5,6 +5,7 @@ using System;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    public static event Action<int> OnClosedDoor;
     [Header("Interact Settings")]
     [SerializeField] private KeyCode interactButton;
     private void OnTriggerEnter(Collider other)
@@ -12,6 +13,12 @@ public class PlayerInteraction : MonoBehaviour
         if (other.gameObject.TryGetComponent<ICollectable>(out ICollectable collectable))
         {
             collectable.Collect(this);
+        }
+
+        if(other.gameObject.TryGetComponent<PhaseStartTrigger>(out PhaseStartTrigger phaseStartTrigger))
+        {
+            GameManager.StartNewPhase();
+            OnClosedDoor?.Invoke(phaseStartTrigger.GetDoorID());
         }
     }
 

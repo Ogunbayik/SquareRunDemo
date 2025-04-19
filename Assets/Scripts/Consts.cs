@@ -31,9 +31,13 @@ public class Consts
         public const string CLOSED_PARAMETER = "isClosed";
     }
 
-    public struct GameTags
+    public struct GameoverCanvasAnimationParameter
     {
-        public const string PHASE_START_TAG = "PhaseStart";
+        public const string SHOWING_GOSCORE_PARAMETER = "isShowGOScore";
+        public const string RETURN_IDLE_GOSCORE_PARAMETER = "isReturnIdleGOScore";
+        public const string GAMEOVER_PARAMETER = "isGameover";
     }
+
+
     
 }

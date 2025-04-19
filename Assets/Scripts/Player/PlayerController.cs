@@ -14,10 +14,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private KeyCode runKey;
     [Header("Timer Settings")]
     [SerializeField] private float maxStamina;
-    [SerializeField] private float teleportDelayTime;
+    [SerializeField] private float teleportTime;
     [SerializeField] private float afkCountDown;
 
-    private float initTeleportDelayTime;
+    private float defaultTeleportTime;
     private float afkTimer;
     private float currentStamina;
 
@@ -38,16 +38,45 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         currentStamina = maxStamina;
-        initTeleportDelayTime = teleportDelayTime;
+        defaultTeleportTime = teleportTime;
         afkTimer = afkCountDown;
         skinnedMeshRenderer.material.color = GameColorManager.Instance.GetStartColor();
         playerColor = skinnedMeshRenderer.material.color;
+        isTeleporting = true;
+
 
     }
     private void OnEnable()
     {
+        GameManager.OnPlayerPassedPhase += GameManager_OnPlayerPassedPhase;
         ScoreManager.OnPassedPhase += PlayerIsTeleporting;
     }
+
+    private void GameManager_OnPlayerPassedPhase()
+    {
+        //Player need to teleport next Colorful Area.
+    }
+
+    private IEnumerator PlayerTeleportNextArea()
+    {
+        //Player must stop the place.
+        movementDirection = Vector3.zero;
+        var teleportPosition = colorfulGrounds.GetNextColorfulGround();
+        Debug.Log("Player setup teleporting");
+        yield return new WaitForSeconds(2f);
+        //Add particle teleport efect like smoke!
+        Debug.Log("Player do something after 2 seconds");
+        yield return new WaitForSeconds(3f);
+        //Player is teleported next Area
+        Debug.Log("Player do something after 3 seconds");
+        yield return new WaitForSeconds(5f);
+        //Change game manager state
+        Debug.Log("Player teleported next area");
+        isTeleporting = false;
+        StopCoroutine(nameof(PlayerTeleportNextArea));
+
+    }
+
     private void OnDisable()
     {
         ScoreManager.OnPassedPhase -= PlayerIsTeleporting;
@@ -105,7 +134,7 @@ public class PlayerController : MonoBehaviour
         if (isAfk)
             return;
 
-        if (GameManager.Instance.currentState == GameManager.GameStates.InGame)
+        if (GameManager.Instance.currentState == GameManager.GameStates.InGame || GameManager.Instance.currentState == GameManager.GameStates.GameStart)
             CheckPlayerAfk();
     }
 
@@ -178,11 +207,12 @@ public class PlayerController : MonoBehaviour
     {
         while (isTeleporting)
         {
+            movementDirection = Vector3.zero;
             var teleportPosition = colorfulGrounds.GetNextColorfulGround();
-            yield return new WaitForSeconds(teleportDelayTime);
+            yield return new WaitForSeconds(teleportTime);
             isTeleporting = false;
             transform.position = teleportPosition.position;
-            teleportDelayTime = initTeleportDelayTime;
+            teleportTime = defaultTeleportTime;
         }
     }
     private void ResetSadAnimation()

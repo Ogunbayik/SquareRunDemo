@@ -1,22 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using TMPro;
+using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
 
     public static Action OnPassedPhase;
+    public static event Action OnGameoverScoreChange;
 
     [Header("Settings")]
-    [SerializeField] private float firstCountdown;
-    [SerializeField] private float repeatCountdown;
+    [SerializeField] private float countDownFirst;
+    [SerializeField] private float countDownRepeat;
     [SerializeField] private int addScore;
     [SerializeField] private int passScore;
+    [Header("UI Settings")]
+    [SerializeField] private TextMeshProUGUI gameScoreText;
+    [SerializeField] private TextMeshProUGUI gameOverScoreText;
 
-    private int gameScore;
-    private int gameOverScore;
+    private int gameScore = 1000;
+    private int gameOverScore = 0;
     private void Awake()
     {
         #region Singleton
@@ -27,22 +30,11 @@ public class ScoreManager : MonoBehaviour
         else
             Instance = this;
         #endregion
-
-        gameOverScore = 0;
     }
     private void Start()
     {
-        InvokeRepeating(nameof(UpdateGameOverScore), firstCountdown, repeatCountdown);
-    }
-    
-    private void UpdateGameOverScore()
-    {
-        gameOverScore += addScore;
-
-        if (gameOverScore <= gameScore)
-            return;
-
-        CheckGameScore();
+        InvokeRepeating(nameof(UpdateGameOverScore), countDownFirst, countDownRepeat);
+        gameScoreText.text = $"Score: {gameScore}";
     }
     private void OnEnable()
     {
@@ -55,33 +47,56 @@ public class ScoreManager : MonoBehaviour
         Gem.OnPlayerCollectGem -= Gem_OnPlayerCollectGem;
         SpikeLog.OnSpikeHitPlayer -= SpikeLog_OnSpikeHitPlayer;
     }
-
     private void Gem_OnPlayerCollectGem(Gem gem, PlayerInteraction player)
     {
         gameScore += gem.GetGemScore();
+        UpdateGameScoreText(gameScore);
+
         CheckGameScore();
     }
     private void SpikeLog_OnSpikeHitPlayer(SpikeLog spike, PlayerController player)
     {
         gameScore -= spike.GetDecreaseScore();
+        UpdateGameScoreText(gameScore);
+        CheckGameScore();
+    }
+    private void UpdateGameScoreText(int score)
+    {
+        gameScoreText.text = $"Score: {score}";
+    }
+    private void UpdateGameOverScore()
+    {
+        OnGameoverScoreChange?.Invoke();
+
+        gameOverScore += addScore;
+        UpdateGameOverScoreText(gameOverScore);
+
+        if (gameOverScore <= gameScore)
+            return;
 
         CheckGameScore();
     }
-
+    private void UpdateGameOverScoreText(int score)
+    {
+        gameOverScoreText.text = $"Gameover Score Updated: {score}";
+    }
     private void CheckGameScore()
     {
         if(gameScore >= passScore)
         {
+            GameManager.PlayerPassedCurrentPhase();
             //Player passed currentPhase and Teleporting
             //Change GameManagerState
             OnPassedPhase?.Invoke();
+            
 
             var multiplyPassScore = 3;
             passScore *= multiplyPassScore;
         }
         else if(gameScore < gameOverScore)
         {
-            Debug.Log("Game is over");
+            GameManager.Instance.ChangeState(GameManager.GameStates.GameOver);
+            //We dont need to countdown after game over.
             CancelInvoke(nameof(UpdateGameOverScore));
         }
     }

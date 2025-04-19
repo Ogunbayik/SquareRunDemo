@@ -46,7 +46,7 @@ public class SpikeLog : MonoBehaviour
     }
     private void Update()
     {
-        SpikeMovement(movementDirection);
+        SpikeMovement();
     }
 
     private void SetSpikeRotation(Vector3 rotation)
@@ -55,10 +55,10 @@ public class SpikeLog : MonoBehaviour
         transform.Rotate(spikeLogRotation);
     }
 
-    public void SpikeMovement(Vector3 direction)
+    public void SpikeMovement()
     {
-        movementDirection = direction;
-        transform.Translate(direction * movementSpeed * Time.deltaTime);
+        movementDirection = Vector3.forward;
+        transform.Translate(movementDirection * movementSpeed * Time.deltaTime, Space.Self);
     }
 
     private void OnTriggerEnter(Collider other)

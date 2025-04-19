@@ -10,9 +10,11 @@ public class GameManager : MonoBehaviour
     public static Action OnTeleporting;
     public static Action OnTeleported;
 
-    public static Action OnPhaseStart;
-    public static Action OnPlayerWinGame;
-    public static Action OnPlayerGameOver;
+    public static Action OnWinGame;
+    public static Action OnGameover;
+
+    public static event Action OnGamePhaseStart;
+    public static event Action OnPlayerPassedPhase;
 
     public enum GameStates
     {
@@ -75,15 +77,35 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         ScoreManager.OnPassedPhase += PlayerPassedPhase;
+        OnGamePhaseStart += GameManager_OnGamePhaseStart;
+        OnPlayerPassedPhase += GameManager_OnPlayerPassedPhase;
         OnTeleported += PlayerTeleported;
     }
-
     private void OnDisable()
     {
+        OnGamePhaseStart -= GameManager_OnGamePhaseStart;
         ScoreManager.OnPassedPhase -= PlayerPassedPhase;
         OnTeleported -= PlayerTeleported;
     }
+    private void GameManager_OnGamePhaseStart()
+    {
+        ChangeState(GameStates.InGame);
+    }
+    private void GameManager_OnPlayerPassedPhase()
+    {
+        ChangeState(GameStates.PassedPhase);
+    }
 
+    public static void StartNewPhase()
+    {
+        Debug.Log("Starting new phase");
+        OnGamePhaseStart?.Invoke();
+    }
+    public static void PlayerPassedCurrentPhase()
+    {
+        Debug.Log("Player is passed the Phase");
+        OnPlayerPassedPhase?.Invoke();
+    }
     // Update is called once per frame
     void Update()
     {
@@ -120,7 +142,7 @@ public class GameManager : MonoBehaviour
                 currentPhase = GamePhase.FirstPhase;
                 playerController.SetPlayerDirection(new Vector3(horizontalInput, 0f, verticalInput));
 
-                var firstPhaseRotation = new Vector3(0f, 180f, 0f);
+                var firstPhaseRotation = new Vector3(0f, 180, 0f);
                 SetSpikeRotation(firstPhaseRotation);
                 break;
             case 1:

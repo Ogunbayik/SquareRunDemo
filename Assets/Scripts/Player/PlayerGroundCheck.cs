@@ -16,43 +16,50 @@ public class PlayerGroundCheck : MonoBehaviour
     [HideInInspector]
     public PlayerMode currentMode;
 
-    [Header("Check Settings")]
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private float checkRadius;
-
-    private Grounds grounds;
+    private SkinnedMeshRenderer skinnedMeshRenderer;
     private void Awake()
     {
+        skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        
+    }
+    private void Start()
+    {
         currentMode = PlayerMode.Normal;
-        grounds = GameObject.FindObjectOfType<Grounds>();
     }
-    private void Update()
+    private void OnEnable()
     {
-        CheckGround();
+        Grounds.OnGroundColorChange += Grounds_OnGroundColorChange;
     }
 
-    private void CheckGround()
+    private void OnDisable()
     {
-        //USE PHYSÝCS METHOD FOR BOOSTED AREA.
-        var checkGround = Physics.CheckSphere(transform.position, checkRadius, groundLayer);
+        Grounds.OnGroundColorChange -= Grounds_OnGroundColorChange;
+    }
+    private void Grounds_OnGroundColorChange(Grounds ground)
+    {
+        CheckPlayerColor(ground);
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        //Need to check first time when player collision with grounds.
+    }
 
-        if (checkGround)
+    private void CheckPlayerColor(Grounds ground)
+    {
+        var playerColor = skinnedMeshRenderer.material.color;
+        var groundColor = ground.GetCurrentGround().GetComponent<MeshRenderer>().material.color;
+
+        if(playerColor == groundColor)
         {
-            var playerColor = GetComponentInChildren<SkinnedMeshRenderer>().material.color;
-            var currentGround = grounds.GetCurrentGround();
-            var groundColor = currentGround.GetComponent<MeshRenderer>().material.color;
-
-            if (playerColor == groundColor)
-            {
-                ChangeMode(PlayerMode.Boosted);
-            }
-            else
-            {
-                ChangeMode(PlayerMode.Decreased);
-            }
+            ChangeMode(PlayerMode.Boosted);
+            Debug.Log("Player is boosted mode.");
+        }
+        else
+        {
+            ChangeMode(PlayerMode.Decreased);
+            Debug.Log("Player is Decreased mode.");
         }
     }
-
     private void ChangeMode(PlayerMode mode)
     {
         if(currentMode == mode) { return; }
