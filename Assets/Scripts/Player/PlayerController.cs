@@ -14,8 +14,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private KeyCode runKey;
     [Header("Timer Settings")]
     [SerializeField] private float maxStamina;
-    [SerializeField] private float teleportTime;
     [SerializeField] private float afkCountDown;
+    [Header("Teleport Settings")]
+    [SerializeField] private ParticleSystem teleportParticle;
+    [SerializeField] private float teleportTime;
+    [SerializeField] private float delayAnimationTime;
 
     private float defaultTeleportTime;
     private float afkTimer;
@@ -60,21 +63,24 @@ public class PlayerController : MonoBehaviour
     private IEnumerator PlayerTeleportNextArea()
     {
         //Player must stop the place.
-        movementDirection = Vector3.zero;
+        gameObject.GetComponent<PlayerController>().enabled = false;
         var teleportPosition = colorfulGrounds.GetNextColorfulGround();
         Debug.Log("Player setup teleporting");
-        yield return new WaitForSeconds(2f);
-        //Add particle teleport efect like smoke!
-        Debug.Log("Player do something after 2 seconds");
+        yield return new WaitForSeconds(1f);
+        //Use teleport animation
+        animationController.ActivateTeleportAnimation();
         yield return new WaitForSeconds(3f);
-        //Player is teleported next Area
+        //Add particle teleport efect 
+        var teleportSphere = Instantiate(teleportParticle, transform.position, Quaternion.identity);
         Debug.Log("Player do something after 3 seconds");
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(4f);
         //Change game manager state
-        Debug.Log("Player teleported next area");
+        Destroy(teleportSphere.gameObject);
+        transform.position = teleportPosition.position;
+        yield return new WaitForSeconds(1f);
         isTeleporting = false;
+        gameObject.GetComponent<PlayerController>().enabled = true;
         StopCoroutine(nameof(PlayerTeleportNextArea));
-
     }
 
     private void OnDisable()
@@ -87,6 +93,11 @@ public class PlayerController : MonoBehaviour
 
         SetPlayerStates();
         PlayerBehaviour();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            StartCoroutine(nameof(PlayerTeleportNextArea));
+        else if (Input.GetKeyDown(KeyCode.E))
+            isTeleporting = true;
     }
 
     private void SetPlayerStates()
@@ -134,7 +145,7 @@ public class PlayerController : MonoBehaviour
         if (isAfk)
             return;
 
-        if (GameManager.Instance.currentState == GameManager.GameStates.InGame || GameManager.Instance.currentState == GameManager.GameStates.GameStart)
+        if (GameManager.Instance.currentState == GameManager.GameStates.InGame || GameManager.Instance.currentState == GameManager.GameStates.GameStart && !isTeleporting)
             CheckPlayerAfk();
     }
 

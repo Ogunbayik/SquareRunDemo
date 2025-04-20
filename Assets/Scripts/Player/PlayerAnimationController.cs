@@ -11,12 +11,11 @@ public class PlayerAnimationController : MonoBehaviour
     }
     private void OnEnable()
     {
-        GameManager.OnTeleporting += ActivateTeleportAnimation;
         PlayerStateManager.OnStateChanged += HandleStateChanged;
     }
     private void OnDisable()
     {
-        GameManager.OnTeleporting -= ActivateTeleportAnimation;
+        PlayerStateManager.OnStateChanged -= HandleStateChanged;
     }
 
     private void HandleStateChanged(PlayerStateManager.PlayerStates previousState, PlayerStateManager.PlayerStates newState)
@@ -29,7 +28,7 @@ public class PlayerAnimationController : MonoBehaviour
     {
         animator.SetBool(Consts.PlayerAnimationParameter.SAD_PARAMETER, isActive);
     }
-    private void ActivateTeleportAnimation()
+    public void ActivateTeleportAnimation()
     {
         animator.SetBool(Consts.PlayerAnimationParameter.TELEPORT_PARAMETER, true);
     }
