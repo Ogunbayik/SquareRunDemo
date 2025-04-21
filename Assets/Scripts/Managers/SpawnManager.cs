@@ -6,6 +6,8 @@ public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager Instance;
 
+    public List<GameObject> allSpawnedObjects = new List<GameObject>();
+
     private Grounds grounds;
 
     [Header("Spawn Prefabs")]
@@ -16,11 +18,13 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private float verticalSpawnRange;
     [Header("Spawn Time")]
     [SerializeField] private float spawnRepeatTime;
+    [SerializeField] private Vector3 spikeRotation;
+    [SerializeField] private int addRotation;
 
     private Vector3 randomSpikePosition;
     private Vector3 randomGemPosition;
 
-    private bool canSpawnGem = true;
+    private bool canSpawnGem;
     private void Awake()
     {
         #region Singleton
@@ -44,17 +48,36 @@ public class SpawnManager : MonoBehaviour
     private void OnEnable()
     {
         GameManager.OnGamePhaseStart += GameManager_OnGamePhaseStart;
+        GameManager.OnPlayerPassedPhase += GameManager_OnPlayerPassedPhase;
         Gem.OnPlayerCollectedAnyGem += Gem_OnPlayerCollectedAnyGem;
+        Gem.OnPlayerCollectGem += Gem_OnPlayerCollectGem;
     }
     private void OnDisable()
     {
         GameManager.OnGamePhaseStart -= GameManager_OnGamePhaseStart;
+        GameManager.OnPlayerPassedPhase -= GameManager_OnPlayerPassedPhase;
         Gem.OnPlayerCollectedAnyGem -= Gem_OnPlayerCollectedAnyGem;
+        Gem.OnPlayerCollectGem -= Gem_OnPlayerCollectGem;
     }
+    private void Gem_OnPlayerCollectGem(Gem gem, PlayerInteraction player)
+    {
+        allSpawnedObjects.Remove(gem.gameObject);
+    }
+
+    private void GameManager_OnPlayerPassedPhase()
+    {
+        SetCanGemSpawn(false);
+        CancelInvoke(nameof(SpawnSpikeInGame));
+        ChangeSpikeRotation(addRotation);
+
+        StartCoroutine(nameof(DestroyAllSpawnedObjects));
+    }
+
     private void GameManager_OnGamePhaseStart()
     {
         var firstSpawnTime = 1f;
         InvokeRepeating(nameof(SpawnSpikeInGame), firstSpawnTime, spawnRepeatTime);
+        SetCanGemSpawn(true);
     }
     private void Gem_OnPlayerCollectedAnyGem()
     {
@@ -64,10 +87,14 @@ public class SpawnManager : MonoBehaviour
     private void SpawnSpikeInGame()
     {
         var spikelog = Instantiate(spikePrefab);
-        var spikeRotation = GameManager.Instance.GetSpikeRotation();
+        allSpawnedObjects.Add(spikelog);
 
         spikelog.transform.position = RandomSpikePosition();
-        spikelog.transform.Rotate(spikeRotation);
+        spikelog.GetComponent<SpikeLog>().SetSpikeRotation(spikeRotation);
+    }
+    private void ChangeSpikeRotation(int rotation)
+    {
+        spikeRotation = new Vector3(spikeRotation.x, spikeRotation.y + rotation, spikeRotation.z);
     }
     private Vector3 RandomSpikePosition()
     {
@@ -95,6 +122,8 @@ public class SpawnManager : MonoBehaviour
     private void SpawnGem()
     {
         var gem = Instantiate(gemPrefab);
+        allSpawnedObjects.Add(gem);
+
         gem.transform.position = RandomGemPosition();
         canSpawnGem = false;
     }
@@ -126,5 +155,27 @@ public class SpawnManager : MonoBehaviour
         }
 
         return randomGemPosition;
+    }
+    public void SetCanGemSpawn(bool canSpawn)
+    {
+        canSpawnGem = canSpawn;
+    }
+
+    private IEnumerator DestroyAllSpawnedObjects()
+    {
+        Debug.Log("Destroying is starting");
+        yield return new WaitForSeconds(1f);
+        DestroyObjects();
+        yield return new WaitForSeconds(1f);
+        allSpawnedObjects.Clear();
+        StopCoroutine(nameof(DestroyAllSpawnedObjects));
+    }
+
+    private void DestroyObjects()
+    {
+        foreach (var spawnedObject in allSpawnedObjects)
+        {
+            Destroy(spawnedObject.gameObject, 1f);
+        }
     }
 }

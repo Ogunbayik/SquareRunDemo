@@ -173,6 +173,7 @@ GameObject:
   - component: {fileID: 5508018011994130182}
   - component: {fileID: 5132900290318392767}
   - component: {fileID: 8515725218916923995}
+  - component: {fileID: 779689970}
   m_Layer: 0
   m_Name: DoorVisual
   m_TagString: Untagged
@@ -230,6 +231,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorID: 0
+--- !u!65 &779689970
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5132900290318392764}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 4, z: 3}
+  m_Center: {x: -0.1, y: 2, z: 0}
 --- !u!1 &6177101054847467945
 GameObject:
   m_ObjectHideFlags: 0

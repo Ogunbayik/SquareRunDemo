@@ -1,8 +1,11 @@
 using System.Collections;
 using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
+    public static event Action OnPlayerTeleportNextPhase;
+
     private Rigidbody playerRb;
     private SkinnedMeshRenderer skinnedMeshRenderer;
     private PlayerAnimationController animationController;
@@ -20,7 +23,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float teleportTime;
     [SerializeField] private float delayAnimationTime;
 
-    private float defaultTeleportTime;
+    [SerializeField] private Transform bodyTransform;
+    [SerializeField] private float rotationSpeed;
+
     private float afkTimer;
     private float currentStamina;
 
@@ -31,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private Color playerColor;
 
     private Vector3 movementDirection;
+    private Vector3 teleportPosition;
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -41,63 +47,64 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         currentStamina = maxStamina;
-        defaultTeleportTime = teleportTime;
         afkTimer = afkCountDown;
         skinnedMeshRenderer.material.color = GameColorManager.Instance.GetStartColor();
         playerColor = skinnedMeshRenderer.material.color;
-        isTeleporting = true;
 
 
     }
     private void OnEnable()
     {
         GameManager.OnPlayerPassedPhase += GameManager_OnPlayerPassedPhase;
-        ScoreManager.OnPassedPhase += PlayerIsTeleporting;
+    }
+    private void OnDisable()
+    {
+        GameManager.OnPlayerPassedPhase -= GameManager_OnPlayerPassedPhase;
     }
 
     private void GameManager_OnPlayerPassedPhase()
     {
-        //Player need to teleport next Colorful Area.
+        StartCoroutine(nameof(PlayerTeleportNextArea));
     }
 
     private IEnumerator PlayerTeleportNextArea()
     {
         //Player must stop the place.
+        ReturnIdle();
         gameObject.GetComponent<PlayerController>().enabled = false;
-        var teleportPosition = colorfulGrounds.GetNextColorfulGround();
-        Debug.Log("Player setup teleporting");
+        teleportPosition = colorfulGrounds.GetNextColorfulGround().transform.position;
+
         yield return new WaitForSeconds(1f);
         //Use teleport animation
         animationController.ActivateTeleportAnimation();
         yield return new WaitForSeconds(3f);
         //Add particle teleport efect 
         var teleportSphere = Instantiate(teleportParticle, transform.position, Quaternion.identity);
-        Debug.Log("Player do something after 3 seconds");
+
         yield return new WaitForSeconds(4f);
         //Change game manager state
         Destroy(teleportSphere.gameObject);
-        transform.position = teleportPosition.position;
+        transform.position = teleportPosition;
         yield return new WaitForSeconds(1f);
+        SetPlayerDirection(movementDirection);
         isTeleporting = false;
         gameObject.GetComponent<PlayerController>().enabled = true;
         StopCoroutine(nameof(PlayerTeleportNextArea));
+        OnPlayerTeleportNextPhase?.Invoke();
+    }
+    private void ReturnIdle()
+    {
+        PlayerStateManager.Instance.ChangeState(PlayerStateManager.PlayerStates.Idle);
     }
 
-    private void OnDisable()
-    {
-        ScoreManager.OnPassedPhase -= PlayerIsTeleporting;
-    }
+   
     void Update()
     {
         CheckPlayerStamina();
 
         SetPlayerStates();
         PlayerBehaviour();
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            StartCoroutine(nameof(PlayerTeleportNextArea));
-        else if (Input.GetKeyDown(KeyCode.E))
-            isTeleporting = true;
+        SetRotation();
     }
 
     private void SetPlayerStates()
@@ -208,22 +215,15 @@ public class PlayerController : MonoBehaviour
 
         playerRb.velocity = direction * movementSpeed;
     }
-    private void PlayerIsTeleporting()
-    {
-        isTeleporting = true;
-        StartCoroutine(nameof(TeleportNextArea));
-    }
 
-    private IEnumerator TeleportNextArea()
+    private void SetRotation()
     {
-        while (isTeleporting)
+        if(movementDirection != Vector3.zero)
         {
-            movementDirection = Vector3.zero;
-            var teleportPosition = colorfulGrounds.GetNextColorfulGround();
-            yield return new WaitForSeconds(teleportTime);
-            isTeleporting = false;
-            transform.position = teleportPosition.position;
-            teleportTime = defaultTeleportTime;
+            var bodyForward = Vector3.RotateTowards(bodyTransform.forward, movementDirection, rotationSpeed * Time.deltaTime, 0f);
+            var bodyRotation = Quaternion.LookRotation(bodyForward);
+
+            bodyTransform.rotation = bodyRotation;
         }
     }
     private void ResetSadAnimation()

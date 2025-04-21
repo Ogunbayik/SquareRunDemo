@@ -7,9 +7,6 @@ public class GameManager : MonoBehaviour
 {
     private PlayerController playerController;
 
-    public static Action OnTeleporting;
-    public static Action OnTeleported;
-
     public static Action OnWinGame;
     public static Action OnGameover;
 
@@ -46,11 +43,9 @@ public class GameManager : MonoBehaviour
     private int phaseIndex;
 
     private Vector3 gameDirection;
-    private Vector3 spikeRotation;
 
     private float horizontalInput;
     private float verticalInput;
-    private float initialDelayTime;
 
     private void Awake()
     {
@@ -71,21 +66,18 @@ public class GameManager : MonoBehaviour
     {
         currentPhase = GamePhase.FirstPhase;
         currentState = GameStates.GameStart;
-
-        initialDelayTime = delayNextState;
     }
     private void OnEnable()
     {
-        ScoreManager.OnPassedPhase += PlayerPassedPhase;
         OnGamePhaseStart += GameManager_OnGamePhaseStart;
         OnPlayerPassedPhase += GameManager_OnPlayerPassedPhase;
-        OnTeleported += PlayerTeleported;
+        PlayerController.OnPlayerTeleportNextPhase += PlayerController_OnPlayerTeleportNextPhase;
     }
     private void OnDisable()
     {
         OnGamePhaseStart -= GameManager_OnGamePhaseStart;
-        ScoreManager.OnPassedPhase -= PlayerPassedPhase;
-        OnTeleported -= PlayerTeleported;
+        OnPlayerPassedPhase -= GameManager_OnPlayerPassedPhase;
+        PlayerController.OnPlayerTeleportNextPhase -= PlayerController_OnPlayerTeleportNextPhase;
     }
     private void GameManager_OnGamePhaseStart()
     {
@@ -95,21 +87,23 @@ public class GameManager : MonoBehaviour
     {
         ChangeState(GameStates.PassedPhase);
     }
+    private void PlayerController_OnPlayerTeleportNextPhase()
+    {
+        ChangeState(GameStates.GameStart);
+        SetNextPhase();
+    }
 
     public static void StartNewPhase()
     {
-        Debug.Log("Starting new phase");
         OnGamePhaseStart?.Invoke();
     }
     public static void PlayerPassedCurrentPhase()
     {
-        Debug.Log("Player is passed the Phase");
         OnPlayerPassedPhase?.Invoke();
     }
     // Update is called once per frame
     void Update()
     {
-        PlayerIsStopped();
         switch(currentState)
         {
             case GameStates.GameStart:
@@ -141,77 +135,24 @@ public class GameManager : MonoBehaviour
             case 0:
                 currentPhase = GamePhase.FirstPhase;
                 playerController.SetPlayerDirection(new Vector3(horizontalInput, 0f, verticalInput));
-
-                var firstPhaseRotation = new Vector3(0f, 180, 0f);
-                SetSpikeRotation(firstPhaseRotation);
                 break;
             case 1:
                 currentPhase = GamePhase.SecondPhase;
                 playerController.SetPlayerDirection(new Vector3(verticalInput, 0f, -horizontalInput));
-
-                var secondPhaseRotation = new Vector3(0f, 270f, 0f);
-                SetSpikeRotation(secondPhaseRotation);
                 break;
             case 2:
                 currentPhase = GamePhase.ThirdPhase;
                 playerController.SetPlayerDirection(new Vector3(-horizontalInput, 0f, -verticalInput));
-
-                var thirdPhaseRotation = new Vector3(0f, 0f, 0f);
-                SetSpikeRotation(thirdPhaseRotation);
                 break;
             case 3:
                 currentPhase = GamePhase.LastPhase;
                 playerController.SetPlayerDirection(new Vector3(-verticalInput, 0f, horizontalInput));
-
-                var lastPhaseRotation = new Vector3(0f, 90f, 0f);
-                SetSpikeRotation(lastPhaseRotation);
                 break;
         }
     }
-
-    private void SetSpikeRotation(Vector3 rotation)
-    {
-        spikeRotation = rotation;
-    }
-
-    public Vector3 GetSpikeRotation()
-    {
-        return spikeRotation;
-    }
-    private void PlayerIsStopped()
-    {
-        if (currentState == GameStates.GameStart || currentState == GameStates.InGame)
-            gameDirection = gameDirection.normalized;
-        else
-            gameDirection = Vector3.zero;
-    }
-    public Vector3 GetPlayerMovementDirection()
-    {
-        return gameDirection;
-    }
-
-    private void PlayerPassedPhase()
-    {
-        StartCoroutine(nameof(NextPhaseDelay));
-    }
-    private IEnumerator NextPhaseDelay()
-    {
-        ChangeState(GameStates.PassedPhase);
-
-        yield return new WaitForSeconds(delayTeleporting);
-
-        OnTeleporting?.Invoke();
-
-        yield return new WaitForSeconds(delayNextState);
-
-        OnTeleported?.Invoke();
-    }
-
-    private void PlayerTeleported()
+    private void SetNextPhase()
     {
         phaseIndex++;
-        ChangeState(GameStates.GameStart);
-        StopCoroutine(nameof(NextPhaseDelay));
     }
     public int GetPhaseIndex()
     {

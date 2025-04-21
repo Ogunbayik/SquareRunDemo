@@ -23,19 +23,23 @@ public class Grounds : MonoBehaviour
         SetupGrounds();
         GetRandomTime();
     }
-    private void OnEnable()
-    {
-        GameManager.OnTeleported += SetCurrentGround;
-    }
-
-    private void OnDisable()
-    {
-        GameManager.OnTeleported -= SetCurrentGround;
-    }
 
     private void Update()
     {
         AllGroundsColorChange();
+    }
+
+    private void OnEnable()
+    {
+        PlayerController.OnPlayerTeleportNextPhase += PlayerController_OnPlayerTeleportNextPhase;
+    }
+    private void OnDisable()
+    {
+        PlayerController.OnPlayerTeleportNextPhase -= PlayerController_OnPlayerTeleportNextPhase;
+    }
+    private void PlayerController_OnPlayerTeleportNextPhase()
+    {
+        SetCurrentGround();
     }
 
     private void SetupGrounds()

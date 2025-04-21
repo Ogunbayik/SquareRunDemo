@@ -9,18 +9,36 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [SerializeField] private GameObject followCamera;
     [SerializeField] private int addRotationY;
+
+    private Vector3 newCameraRotation;
+
+    private bool canRotate;
     private void OnEnable()
     {
-        GameManager.OnTeleported += SetCameraRotation;
+        PlayerController.OnPlayerTeleportNextPhase += PlayerController_OnPlayerTeleportNextPhase;
     }
     private void OnDisable()
     {
-        GameManager.OnTeleported -= SetCameraRotation;
+        PlayerController.OnPlayerTeleportNextPhase -= PlayerController_OnPlayerTeleportNextPhase;
+    }
+
+    private void PlayerController_OnPlayerTeleportNextPhase()
+    {
+        SetCameraRotation();
+        canRotate = true;
+    }
+    private void Update()
+    {
+        if (canRotate)
+            followCamera.transform.rotation = Quaternion.Slerp(followCamera.transform.rotation, Quaternion.Euler(newCameraRotation), 1f * Time.deltaTime);
+
+        if (followCamera.transform.rotation == Quaternion.Euler(newCameraRotation))
+            canRotate = false;
     }
     private void SetCameraRotation()
     {
         //Camera Rotation Only Y Coordinate.
-        var newCameraRotation = new Vector3(0f, addRotationY, 0f);
-        followCamera.transform.Rotate(newCameraRotation);
+        var followCameraRotation = followCamera.transform.eulerAngles;
+        newCameraRotation = followCameraRotation + new Vector3(0f, addRotationY, 0f);
     }
 }

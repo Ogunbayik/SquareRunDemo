@@ -27,7 +27,6 @@ public class SpikeLog : MonoBehaviour
     void Start()
     {
         SetRandomColor();
-        SetSpikeRotation(spikeLogRotation);
         SetRandomDecreaseScore();
     }
     private void SetRandomColor()
@@ -49,13 +48,13 @@ public class SpikeLog : MonoBehaviour
         SpikeMovement();
     }
 
-    private void SetSpikeRotation(Vector3 rotation)
+    public void SetSpikeRotation(Vector3 rotation)
     {
         spikeLogRotation = rotation;
         transform.Rotate(spikeLogRotation);
     }
 
-    public void SpikeMovement()
+    private void SpikeMovement()
     {
         movementDirection = Vector3.forward;
         transform.Translate(movementDirection * movementSpeed * Time.deltaTime, Space.Self);
@@ -66,6 +65,7 @@ public class SpikeLog : MonoBehaviour
         if(other.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
             Debug.Log("Hit the Player");
+            SpawnManager.Instance.allSpawnedObjects.Remove(this.gameObject);
             OnSpikeHitPlayer?.Invoke(this, player);
             Destroy(this.gameObject);
         }
