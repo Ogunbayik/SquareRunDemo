@@ -5,7 +5,6 @@ using System;
 
 public class PlayerGroundCheck : MonoBehaviour
 {
-    public static Action OnPassPhase;
     public enum PlayerMode
     {
         Boosted,
@@ -15,13 +14,9 @@ public class PlayerGroundCheck : MonoBehaviour
 
     [HideInInspector]
     public PlayerMode currentMode;
-
-    private SkinnedMeshRenderer skinnedMeshRenderer;
-    private void Awake()
-    {
-        skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
-        
-    }
+    [Header("Particle Settings")]
+    [SerializeField] private ParticleSystem boostAura;
+    [SerializeField] private ParticleSystem decreasedAura;
     private void Start()
     {
         currentMode = PlayerMode.Normal;
@@ -29,27 +24,42 @@ public class PlayerGroundCheck : MonoBehaviour
     private void OnEnable()
     {
         Grounds.OnGroundColorChange += Grounds_OnGroundColorChange;
+        Cabine.OnPlayerColorChanged += Cabine_OnPlayerColorChanged;
     }
-
     private void OnDisable()
     {
         Grounds.OnGroundColorChange -= Grounds_OnGroundColorChange;
+        Cabine.OnPlayerColorChanged -= Cabine_OnPlayerColorChanged;
     }
     private void Grounds_OnGroundColorChange(Grounds ground)
     {
-        CheckPlayerColor(ground);
+        CheckGroundColor(ground, this);
+    }
+    private void Cabine_OnPlayerColorChanged(PlayerInteraction player, Cabine cabine)
+    {
+        var grounds = FindObjectOfType<Grounds>();
+
+        CheckGroundColor(grounds, this);
     }
     private void OnCollisionEnter(Collision collision)
     {
-        //Need to check first time when player collision with grounds.
+        var colorfulGround = collision.gameObject.GetComponentInParent<ColorfulGrounds>();
+        if (colorfulGround != null)
+            ChangeMode(PlayerMode.Normal);
+
+        //Check ground color when the first collision
+        var grounds = collision.gameObject.GetComponentInParent<Grounds>();
+
+        if (grounds != null)
+            CheckGroundColor(grounds, this);
+
     }
-
-    private void CheckPlayerColor(Grounds ground)
+    private void CheckGroundColor(Grounds grounds, PlayerGroundCheck player)
     {
-        var playerColor = skinnedMeshRenderer.material.color;
-        var groundColor = ground.GetCurrentGround().GetComponent<MeshRenderer>().material.color;
+        var playerColor = player.GetComponentInChildren<SkinnedMeshRenderer>().material.color;
+        var groundColor = grounds.GetCurrentGround().GetComponent<MeshRenderer>().material.color;
 
-        if(playerColor == groundColor)
+        if(playerColor.r == groundColor.r && playerColor.g == groundColor.g && playerColor.b == groundColor.b)
         {
             ChangeMode(PlayerMode.Boosted);
             Debug.Log("Player is boosted mode.");
@@ -60,6 +70,7 @@ public class PlayerGroundCheck : MonoBehaviour
             Debug.Log("Player is Decreased mode.");
         }
     }
+
     private void ChangeMode(PlayerMode mode)
     {
         if(currentMode == mode) { return; }

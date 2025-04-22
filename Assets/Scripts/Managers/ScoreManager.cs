@@ -14,6 +14,8 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private float countDownRepeat;
     [SerializeField] private int addScore;
     [SerializeField] private int passScore;
+    [SerializeField] private int multiplyBoost;
+    [SerializeField] private int multiplyDecreased;
     [Header("UI Settings")]
     [SerializeField] private TextMeshProUGUI gameScoreText;
     [SerializeField] private TextMeshProUGUI gameOverScoreText;
@@ -41,7 +43,6 @@ public class ScoreManager : MonoBehaviour
         Gem.OnPlayerCollectGem += Gem_OnPlayerCollectGem;
         SpikeLog.OnSpikeHitPlayer += SpikeLog_OnSpikeHitPlayer;
     }
-
     private void OnDisable()
     {
         Gem.OnPlayerCollectGem -= Gem_OnPlayerCollectGem;
@@ -49,14 +50,27 @@ public class ScoreManager : MonoBehaviour
     }
     private void Gem_OnPlayerCollectGem(Gem gem, PlayerInteraction player)
     {
-        gameScore += gem.GetGemScore();
-        UpdateGameScoreText(gameScore);
+        var playerMode = player.GetComponent<PlayerGroundCheck>().currentMode;
 
+        if(playerMode == PlayerGroundCheck.PlayerMode.Boosted)
+            gameScore += gem.GetGemScore() * multiplyBoost;
+        else if(playerMode == PlayerGroundCheck.PlayerMode.Decreased)
+            gameScore += gem.GetGemScore() * multiplyDecreased;
+
+        UpdateGameScoreText(gameScore);
         CheckGameScore();
     }
     private void SpikeLog_OnSpikeHitPlayer(SpikeLog spike, PlayerController player)
     {
-        gameScore -= spike.GetDecreaseScore();
+        var playerColor = player.GetComponentInChildren<SkinnedMeshRenderer>().material.color;
+        var spikeColor = spike.GetSpikeColor();
+        var decreaseMultiply = 2;
+
+        if (playerColor.r == spikeColor.r && playerColor.g == spikeColor.g && playerColor.b == spikeColor.b)
+            gameScore -= spike.GetDecreaseScore();
+        else
+            gameScore -= spike.GetDecreaseScore() * decreaseMultiply;
+
         UpdateGameScoreText(gameScore);
         CheckGameScore();
     }

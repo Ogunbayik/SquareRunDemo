@@ -20,9 +20,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float afkCountDown;
     [Header("Teleport Settings")]
     [SerializeField] private ParticleSystem teleportParticle;
-    [SerializeField] private float teleportTime;
     [SerializeField] private float delayAnimationTime;
-
+    [SerializeField] private float delayCreateSphereTime;
+    [SerializeField] private float delayTeleportTime;
+    [Header("Rotation Settings")]
     [SerializeField] private Transform bodyTransform;
     [SerializeField] private float rotationSpeed;
 
@@ -50,8 +51,6 @@ public class PlayerController : MonoBehaviour
         afkTimer = afkCountDown;
         skinnedMeshRenderer.material.color = GameColorManager.Instance.GetStartColor();
         playerColor = skinnedMeshRenderer.material.color;
-
-
     }
     private void OnEnable()
     {
@@ -69,23 +68,24 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator PlayerTeleportNextArea()
     {
-        //Player must stop the place.
         ReturnIdle();
         gameObject.GetComponent<PlayerController>().enabled = false;
         teleportPosition = colorfulGrounds.GetNextColorfulGround().transform.position;
 
-        yield return new WaitForSeconds(1f);
-        //Use teleport animation
+        yield return new WaitForSeconds(delayAnimationTime);
         animationController.ActivateTeleportAnimation();
-        yield return new WaitForSeconds(3f);
-        //Add particle teleport efect 
+
+        yield return new WaitForSeconds(delayCreateSphereTime);
         var teleportSphere = Instantiate(teleportParticle, transform.position, Quaternion.identity);
 
-        yield return new WaitForSeconds(4f);
-        //Change game manager state
+        yield return new WaitForSeconds(delayTeleportTime);
+
         Destroy(teleportSphere.gameObject);
         transform.position = teleportPosition;
-        yield return new WaitForSeconds(1f);
+
+        var delayControlTime = 1f;
+
+        yield return new WaitForSeconds(delayControlTime);
         SetPlayerDirection(movementDirection);
         isTeleporting = false;
         gameObject.GetComponent<PlayerController>().enabled = true;
@@ -96,11 +96,10 @@ public class PlayerController : MonoBehaviour
     {
         PlayerStateManager.Instance.ChangeState(PlayerStateManager.PlayerStates.Idle);
     }
-
-   
     void Update()
     {
-        CheckPlayerStamina();
+        if (GameManager.Instance.currentState == GameManager.GameStates.InGame)
+            CheckPlayerStamina();
 
         SetPlayerStates();
         PlayerBehaviour();

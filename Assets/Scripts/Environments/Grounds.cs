@@ -12,6 +12,7 @@ public class Grounds : MonoBehaviour
     [Header("Timer Settings")]
     [SerializeField] private float minChangeTime;
     [SerializeField] private float maxChangeTime;
+
     private bool xDirection;
 
     private Transform currentGround;

@@ -1,20 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Cabine : MonoBehaviour, IInteractable
 {
+    public static event Action<PlayerInteraction,Cabine> OnPlayerColorChanged;
+
     [Header("Color Settings")]
     [SerializeField] private Color cabineColor;
 
-    private GameColorManager colorManager;
-
     private MeshRenderer cabineRenderer;
 
-    private void Awake()
-    {
-        colorManager = FindObjectOfType<GameColorManager>();
-    }
     private void Start()
     {
         cabineRenderer = GetComponent<MeshRenderer>();
@@ -30,6 +27,7 @@ public class Cabine : MonoBehaviour, IInteractable
             return;
 
         playerSkinnedMeshRenderer.material.color = cabineColor;
+        OnPlayerColorChanged?.Invoke(player, this);
     }
 
 }
