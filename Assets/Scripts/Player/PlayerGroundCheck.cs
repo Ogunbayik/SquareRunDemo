@@ -17,6 +17,8 @@ public class PlayerGroundCheck : MonoBehaviour
     [Header("Particle Settings")]
     [SerializeField] private ParticleSystem boostAura;
     [SerializeField] private ParticleSystem decreasedAura;
+
+    private bool isGround;
     private void Start()
     {
         currentMode = PlayerMode.Normal;
@@ -33,7 +35,8 @@ public class PlayerGroundCheck : MonoBehaviour
     }
     private void Grounds_OnGroundColorChange(Grounds ground)
     {
-        CheckGroundColor(ground, this);
+        if (isGround)
+            CheckGroundColor(ground, this);
     }
     private void Cabine_OnPlayerColorChanged(PlayerInteraction player, Cabine cabine)
     {
@@ -53,6 +56,14 @@ public class PlayerGroundCheck : MonoBehaviour
         if (grounds != null)
             CheckGroundColor(grounds, this);
 
+    }
+    private void OnCollisionStay(Collision collision)
+    {
+        var ground = collision.gameObject.GetComponentInParent<Grounds>();
+        if (ground != null)
+            isGround = true;
+        else
+            isGround = false;
     }
     private void CheckGroundColor(Grounds grounds, PlayerGroundCheck player)
     {
