@@ -1525,6 +1525,7 @@ MonoBehaviour:
   allSpawnedObjects: []
   spikePrefab: {fileID: 6453071163049400086, guid: 507ec9dc0caf730448976168104bc1fb, type: 3}
   gemPrefab: {fileID: 5814915420997745604, guid: a4e604f0ca494514bb0edb8016c5bc13, type: 3}
+  smokeParticle: {fileID: 3969777607723797690, guid: 236b1ff4555cb7d4db5b26f32629f6f2, type: 3}
   horizontalSpawnRange: 4
   verticalSpawnRange: 10
   spawnRepeatTime: 5
@@ -1620,7 +1621,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 745993545}
-  m_LocalRotation: {x: -0.1759199, y: 0.82047325, z: -0.42470825, w: -0.33985117}
+  m_LocalRotation: {x: -0.17591995, y: 0.82047325, z: -0.42470813, w: -0.33985126}
   m_LocalPosition: {x: -41, y: 8, z: -36}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2196,7 +2197,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1061400884}
   m_LocalRotation: {x: 0.29984337, y: -0.36196846, z: 0.12419919, w: 0.8738692}
-  m_LocalPosition: {x: -40, y: 8, z: -27.18}
+  m_LocalPosition: {x: -40, y: 8, z: -39.84}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 593459144}
@@ -3142,7 +3143,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
   m_LocalRotation: {x: 0.29984337, y: -0.36196846, z: 0.12419919, w: 0.8738692}
-  m_LocalPosition: {x: -40, y: 8, z: -27.18}
+  m_LocalPosition: {x: -40, y: 8, z: -39.84}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1345343386}
@@ -3264,7 +3265,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1721651611}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -45, y: 0, z: -22.18}
+  m_LocalPosition: {x: -45, y: 0, z: -34.84}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7385957857873951470}

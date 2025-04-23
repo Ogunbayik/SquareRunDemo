@@ -13,6 +13,7 @@ public class SpawnManager : MonoBehaviour
     [Header("Spawn Prefabs")]
     [SerializeField] private GameObject spikePrefab;
     [SerializeField] private GameObject gemPrefab;
+    [SerializeField] private ParticleSystem smokeParticle;
     [Header("Spawn Range")]
     [SerializeField] private float horizontalSpawnRange;
     [SerializeField] private float verticalSpawnRange;
@@ -175,7 +176,13 @@ public class SpawnManager : MonoBehaviour
     {
         foreach (var spawnedObject in allSpawnedObjects)
         {
-            Destroy(spawnedObject.gameObject, 1f);
+            Destroy(spawnedObject);
+        }
+
+        for (int i = 0; i < allSpawnedObjects.Count; i++)
+        {
+            var smoke = Instantiate(smokeParticle);
+            smoke.transform.position = allSpawnedObjects[i].transform.position;
         }
     }
 }
