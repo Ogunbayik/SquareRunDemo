@@ -6,7 +6,6 @@ public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
 
-    public static Action OnPassedPhase;
     public static event Action OnGameoverScoreChange;
 
     [Header("Settings")]
@@ -20,7 +19,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameScoreText;
     [SerializeField] private TextMeshProUGUI gameOverScoreText;
 
-    private int gameScore = 10;
+    private int gameScore = 8;
     private int gameOverScore = 0;
     private void Awake()
     {
@@ -35,6 +34,7 @@ public class ScoreManager : MonoBehaviour
     }
     private void Start()
     {
+        //GAME OVER ÝÇÝN SAYAÇ EKLE.
         InvokeRepeating(nameof(UpdateGameOverScore), countDownFirst, countDownRepeat);
         gameScoreText.text = $"Score: {gameScore}";
     }
@@ -101,7 +101,6 @@ public class ScoreManager : MonoBehaviour
             GameManager.PlayerPassedCurrentPhase();
             //Player passed currentPhase and Teleporting
             //Change GameManagerState
-            OnPassedPhase?.Invoke();
             
 
             var multiplyPassScore = 3;
@@ -109,9 +108,10 @@ public class ScoreManager : MonoBehaviour
         }
         else if(gameScore < gameOverScore)
         {
-            GameManager.Instance.ChangeState(GameManager.GameStates.GameOver);
+            GameManager.GameOverPhase();
             //We dont need to countdown after game over.
             CancelInvoke(nameof(UpdateGameOverScore));
+            Debug.Log("Game is over");
         }
     }
 

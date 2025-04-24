@@ -17,6 +17,7 @@ public class PlayerInteraction : MonoBehaviour
 
         if(other.gameObject.TryGetComponent<PhaseStartTrigger>(out PhaseStartTrigger phaseStartTrigger))
         {
+            
             GameManager.StartNewPhase();
             OnClosedDoor?.Invoke(phaseStartTrigger.GetDoorID());
             Destroy(phaseStartTrigger.gameObject);

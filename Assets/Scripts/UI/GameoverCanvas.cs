@@ -13,14 +13,15 @@ public class GameoverCanvas : MonoBehaviour
     private void OnEnable()
     {
         ScoreManager.OnGameoverScoreChange += ScoreManager_OnGameoverScoreChange;
-        GameManager.OnGameover += ScoreManager_OnGameover;
+        GameManager.OnGameOverPhase += GameManager_OnGameOverPhase;
     }
+
     private void OnDisable()
     {
         ScoreManager.OnGameoverScoreChange -= ScoreManager_OnGameoverScoreChange;
-        GameManager.OnGameover -= ScoreManager_OnGameover;
+        GameManager.OnGameOverPhase -= GameManager_OnGameOverPhase;
     }
-    private void ScoreManager_OnGameover()
+    private void GameManager_OnGameOverPhase()
     {
         //When game is over, Show the gameover text
         animator.SetTrigger(Consts.GameoverCanvasAnimationParameter.GAMEOVER_PARAMETER);
@@ -29,7 +30,6 @@ public class GameoverCanvas : MonoBehaviour
     {
         ShowGameoverScore();
     }
-
     private void ShowGameoverScore()
     {
         animator.SetTrigger(Consts.GameoverCanvasAnimationParameter.SHOWING_GOSCORE_PARAMETER);

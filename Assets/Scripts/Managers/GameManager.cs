@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     public static event Action OnGamePhaseStart;
     public static event Action OnPlayerPassedPhase;
+    public static event Action OnGameOverPhase;
 
     public enum GameStates
     {
@@ -42,8 +43,6 @@ public class GameManager : MonoBehaviour
 
     private int phaseIndex;
 
-    private Vector3 gameDirection;
-
     private float horizontalInput;
     private float verticalInput;
 
@@ -71,14 +70,17 @@ public class GameManager : MonoBehaviour
     {
         OnGamePhaseStart += GameManager_OnGamePhaseStart;
         OnPlayerPassedPhase += GameManager_OnPlayerPassedPhase;
+        OnGameOverPhase += GameManager_OnGameOverPhase;
         PlayerController.OnPlayerTeleportNextPhase += PlayerController_OnPlayerTeleportNextPhase;
     }
     private void OnDisable()
     {
         OnGamePhaseStart -= GameManager_OnGamePhaseStart;
         OnPlayerPassedPhase -= GameManager_OnPlayerPassedPhase;
+        OnGameOverPhase -= GameManager_OnGameOverPhase;
         PlayerController.OnPlayerTeleportNextPhase -= PlayerController_OnPlayerTeleportNextPhase;
     }
+  
     private void GameManager_OnGamePhaseStart()
     {
         ChangeState(GameStates.InGame);
@@ -86,6 +88,10 @@ public class GameManager : MonoBehaviour
     private void GameManager_OnPlayerPassedPhase()
     {
         ChangeState(GameStates.PassedPhase);
+    }
+    private void GameManager_OnGameOverPhase()
+    {
+        ChangeState(GameStates.GameOver);
     }
     private void PlayerController_OnPlayerTeleportNextPhase()
     {
@@ -100,6 +106,10 @@ public class GameManager : MonoBehaviour
     public static void PlayerPassedCurrentPhase()
     {
         OnPlayerPassedPhase?.Invoke();
+    }
+    public static void GameOverPhase()
+    {
+        OnGameOverPhase?.Invoke();
     }
     // Update is called once per frame
     void Update()
@@ -159,7 +169,7 @@ public class GameManager : MonoBehaviour
         return phaseIndex;
     }
 
-    public void ChangeState(GameStates state)
+    private void ChangeState(GameStates state)
     {
         if (currentState == state)
             return;

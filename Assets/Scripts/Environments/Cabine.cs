@@ -75,13 +75,8 @@ public class Cabine : MonoBehaviour, IInteractable
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<PlayerInteraction>())
-            currentCabine = this;
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if(other.gameObject.GetComponent<PlayerInteraction>())
         {
+            currentCabine = this; 
             isPlayerInside = true;
         }
     }

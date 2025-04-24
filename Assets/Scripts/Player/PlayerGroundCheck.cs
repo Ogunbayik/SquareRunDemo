@@ -14,14 +14,19 @@ public class PlayerGroundCheck : MonoBehaviour
 
     [HideInInspector]
     public PlayerMode currentMode;
-    [Header("Particle Settings")]
-    [SerializeField] private ParticleSystem boostAura;
-    [SerializeField] private ParticleSystem decreasedAura;
+    [Header("Aura Settings")]
+    [SerializeField] private ParticleSystem boostAuraParticle;
+    [SerializeField] private ParticleSystem decreasedAuraParticle;
 
     private bool isGround;
+
+    private GameObject boostAura;
+    private GameObject decreasedAura;
     private void Start()
     {
         currentMode = PlayerMode.Normal;
+        boostAura = Instantiate(boostAuraParticle.gameObject,this.transform);
+        decreasedAura = Instantiate(decreasedAuraParticle.gameObject, this.transform);
     }
     private void OnEnable()
     {
@@ -48,7 +53,10 @@ public class PlayerGroundCheck : MonoBehaviour
     {
         var colorfulGround = collision.gameObject.GetComponentInParent<ColorfulGrounds>();
         if (colorfulGround != null)
+        {
             ChangeMode(PlayerMode.Normal);
+            SetPlayerAura();
+        }
 
         //Check ground color when the first collision
         var grounds = collision.gameObject.GetComponentInParent<Grounds>();
@@ -73,12 +81,30 @@ public class PlayerGroundCheck : MonoBehaviour
         if(playerColor.r == groundColor.r && playerColor.g == groundColor.g && playerColor.b == groundColor.b)
         {
             ChangeMode(PlayerMode.Boosted);
-            Debug.Log("Player is boosted mode.");
+            SetPlayerAura();
         }
         else
         {
             ChangeMode(PlayerMode.Decreased);
-            Debug.Log("Player is Decreased mode.");
+            SetPlayerAura();
+        }
+    }
+    private void SetPlayerAura()
+    {
+        switch(currentMode)
+        {
+            case PlayerMode.Normal:
+                boostAura.SetActive(false);
+                decreasedAura.SetActive(false);
+                break;
+                    case PlayerMode.Boosted:
+                boostAura.SetActive(true);
+                decreasedAura.SetActive(false);
+                break;
+            case PlayerMode.Decreased:
+                decreasedAura.SetActive(true);
+                boostAura.SetActive(false);
+                break;
         }
     }
 

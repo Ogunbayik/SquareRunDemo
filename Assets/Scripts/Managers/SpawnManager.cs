@@ -165,9 +165,11 @@ public class SpawnManager : MonoBehaviour
     private IEnumerator DestroyAllSpawnedObjects()
     {
         Debug.Log("Destroying is starting");
-        yield return new WaitForSeconds(1f);
+        var delayDestroyTime = 1f;
+        yield return new WaitForSeconds(delayDestroyTime);
         DestroyObjects();
-        yield return new WaitForSeconds(1f);
+        var delayClearList = 1f;
+        yield return new WaitForSeconds(delayClearList);
         allSpawnedObjects.Clear();
         StopCoroutine(nameof(DestroyAllSpawnedObjects));
     }
