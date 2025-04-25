@@ -6,21 +6,24 @@ public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
 
+    public static event Action<int> OnGameScoreDecreased;
+    public static event Action<int> OnGameScoreIncreased;
     public static event Action OnGameoverScoreChange;
 
     [Header("Settings")]
     [SerializeField] private float countDownFirst;
     [SerializeField] private float countDownRepeat;
     [SerializeField] private int addScore;
-    [SerializeField] private int passScore;
+    [SerializeField] private int maxPassScore;
+    [SerializeField] private int maxGameoverScore;
     [SerializeField] private int multiplyBoost;
     [SerializeField] private int multiplyDecreased;
     [Header("UI Settings")]
     [SerializeField] private TextMeshProUGUI gameScoreText;
     [SerializeField] private TextMeshProUGUI gameOverScoreText;
 
-    private int gameScore = 8;
-    private int gameOverScore = 0;
+    public static int gameScore = -20;
+    public static int gameOverScore = 0;
     private void Awake()
     {
         #region Singleton
@@ -52,10 +55,10 @@ public class ScoreManager : MonoBehaviour
     {
         var playerMode = player.GetComponent<PlayerGroundCheck>().currentMode;
 
-        if(playerMode == PlayerGroundCheck.PlayerMode.Boosted)
-            gameScore += gem.GetGemScore() * multiplyBoost;
+        if (playerMode == PlayerGroundCheck.PlayerMode.Boosted)
+            IncreaseGameScore(gem.GetGemScore() * multiplyBoost);
         else if(playerMode == PlayerGroundCheck.PlayerMode.Decreased)
-            gameScore += gem.GetGemScore() * multiplyDecreased;
+            IncreaseGameScore(gem.GetGemScore() * multiplyDecreased);
 
         UpdateGameScoreText(gameScore);
         CheckGameScore();
@@ -67,12 +70,22 @@ public class ScoreManager : MonoBehaviour
         var decreaseMultiply = 2;
 
         if (playerColor.r == spikeColor.r && playerColor.g == spikeColor.g && playerColor.b == spikeColor.b)
-            gameScore -= spike.GetDecreaseScore();
+            DecreaseGameScore(spike.GetDecreaseScore());
         else
-            gameScore -= spike.GetDecreaseScore() * decreaseMultiply;
+            DecreaseGameScore(spike.GetDecreaseScore() * decreaseMultiply);
 
         UpdateGameScoreText(gameScore);
         CheckGameScore();
+    }
+    private void IncreaseGameScore(int score)
+    {
+        gameScore += score;
+        OnGameScoreIncreased?.Invoke(score);
+    }
+    private void DecreaseGameScore(int score)
+    {
+        gameScore -= score;
+        OnGameScoreDecreased?.Invoke(score);
     }
     private void UpdateGameScoreText(int score)
     {
@@ -96,7 +109,7 @@ public class ScoreManager : MonoBehaviour
     }
     private void CheckGameScore()
     {
-        if(gameScore >= passScore)
+        if(gameScore >= maxPassScore)
         {
             GameManager.PlayerPassedCurrentPhase();
             //Player passed currentPhase and Teleporting
@@ -104,16 +117,26 @@ public class ScoreManager : MonoBehaviour
             
 
             var multiplyPassScore = 3;
-            passScore *= multiplyPassScore;
+            maxPassScore *= multiplyPassScore;
         }
-        else if(gameScore < gameOverScore)
-        {
-            GameManager.GameOverPhase();
-            //We dont need to countdown after game over.
-            CancelInvoke(nameof(UpdateGameOverScore));
-            Debug.Log("Game is over");
-        }
+        //else if (gameScore < gameOverScore)
+        //{
+        //    GameManager.GameOverPhase();
+        //    We dont need to countdown after game over.
+        //    CancelInvoke(nameof(UpdateGameOverScore));
+        //    Debug.Log("Game is over");
+        //}
     }
+
+    public int GetMaxGameOverScore()
+    {
+        return maxGameoverScore;
+    }
+    public int GetMaxPassScore()
+    {
+        return maxPassScore;
+    }
+
 
     
 }

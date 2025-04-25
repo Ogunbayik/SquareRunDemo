@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameoverCanvas : MonoBehaviour
+public class HandleGameoverUI : MonoBehaviour
 {
     private Animator animator;
     private void Awake()
