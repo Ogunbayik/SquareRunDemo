@@ -22,7 +22,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameScoreText;
     [SerializeField] private TextMeshProUGUI gameOverScoreText;
 
-    public static int gameScore = -20;
+    public static int gameScore = -25;
     public static int gameOverScore = 0;
     private void Awake()
     {
