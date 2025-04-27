@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class HandleScoreUI : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI gameScoreText;
     [SerializeField] private Image gameoverFill;
     [SerializeField] private Image gamepassFill;
     void Start()
     {
+        SetScoreText(); 
         gamepassFill.fillAmount = (float)ScoreManager.gameScore / ScoreManager.Instance.GetMaxPassScore();
         gameoverFill.fillAmount = (float)Mathf.Abs(ScoreManager.gameScore) / Mathf.Abs(ScoreManager.Instance.GetMaxGameOverScore());
     }
@@ -42,6 +45,7 @@ public class HandleScoreUI : MonoBehaviour
             gamepassFill.fillAmount = 0;
         }
 
+        SetScoreText();
     }
     private void ScoreManager_OnGameScoreDecreased(int score)
     {
@@ -61,6 +65,13 @@ public class HandleScoreUI : MonoBehaviour
             gamepassFill.fillAmount = scoreRate;
             gameoverFill.fillAmount = 0;
         }
+
+        SetScoreText();
+    }
+
+    private void SetScoreText()
+    {
+        gameScoreText.text = $"Score: {ScoreManager.gameScore}";
     }
 
 
