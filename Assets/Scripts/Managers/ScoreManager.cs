@@ -20,7 +20,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private int multiplyBoost;
     [SerializeField] private int multiplyDecreased;
 
-    public static int gameScore = -25;
+    public static int gameScore = 0;
     private void Awake()
     {
         #region Singleton
@@ -39,13 +39,20 @@ public class ScoreManager : MonoBehaviour
     }
     private void OnEnable()
     {
+        PlayerInteraction.OnPlayerHitted += PlayerInteraction_OnHitTriggerable;
         Gem.OnPlayerCollectGem += Gem_OnPlayerCollectGem;
-        SpikeLog.OnSpikeHitPlayer += SpikeLog_OnSpikeHitPlayer;
     }
+
     private void OnDisable()
     {
         Gem.OnPlayerCollectGem -= Gem_OnPlayerCollectGem;
-        SpikeLog.OnSpikeHitPlayer -= SpikeLog_OnSpikeHitPlayer;
+        PlayerInteraction.OnPlayerHitted -= PlayerInteraction_OnHitTriggerable;
+    }
+    private void PlayerInteraction_OnHitTriggerable(PlayerInteraction player, IHitable hitable)
+    {
+        hitable.HitPlayer(player);
+
+        CheckGameScore();
     }
     private void Gem_OnPlayerCollectGem(Gem gem, PlayerInteraction player)
     {
@@ -58,25 +65,12 @@ public class ScoreManager : MonoBehaviour
 
         CheckGameScore();
     }
-    private void SpikeLog_OnSpikeHitPlayer(SpikeLog spike, PlayerController player)
-    {
-        var playerColor = player.GetComponentInChildren<SkinnedMeshRenderer>().material.color;
-        var spikeColor = spike.GetSpikeColor();
-        var decreaseMultiply = 2;
-
-        if (playerColor.r == spikeColor.r && playerColor.g == spikeColor.g && playerColor.b == spikeColor.b)
-            DecreaseGameScore(spike.GetDecreaseScore());
-        else
-            DecreaseGameScore(spike.GetDecreaseScore() * decreaseMultiply);
-
-        CheckGameScore();
-    }
     private void IncreaseGameScore(int score)
     {
         gameScore += score;
         OnGameScoreIncreased?.Invoke(score);
     }
-    private void DecreaseGameScore(int score)
+    public void DecreaseGameScore(int score)
     {
         gameScore -= score;
         OnGameScoreDecreased?.Invoke(score);

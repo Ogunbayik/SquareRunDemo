@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class SpikeLog : MonoBehaviour
+public class SpikeLog : MonoBehaviour, IHitable
 {
-    public static event Action<SpikeLog,PlayerController> OnSpikeHitPlayer;
-
     private GameColorManager colorManager;
 
     private Material[] spikeMaterials;
@@ -59,17 +57,6 @@ public class SpikeLog : MonoBehaviour
         movementDirection = Vector3.forward;
         transform.Translate(movementDirection * movementSpeed * Time.deltaTime, Space.Self);
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
-        {
-            Debug.Log("Hit the Player");
-            SpawnManager.Instance.allSpawnedObjects.Remove(this.gameObject);
-            OnSpikeHitPlayer?.Invoke(this, player);
-            Destroy(this.gameObject);
-        }
-    }
     private void SetRandomDecreaseScore()
     {
         decreasedScore = UnityEngine.Random.Range(minDecreaseScore, maxDecreaseScore);
@@ -83,9 +70,20 @@ public class SpikeLog : MonoBehaviour
         return spikeColor;
     }
 
-    public int GetDecreaseScore()
+    public void HitPlayer(PlayerInteraction player)
     {
-        return decreasedScore;
-    }
+        Debug.Log($"{gameObject.name} hitted the player.");
+        SpawnManager.Instance.allSpawnedObjects.Remove(this.gameObject);
+        Destroy(this.gameObject);
 
+        var playerColor = player.GetComponentInChildren<SkinnedMeshRenderer>().material.color;
+        var cylinderIndex = 0;
+        var spikeColor = spikeMaterials[cylinderIndex].color;
+        var decreaseMultiply = 2;
+
+        if (playerColor.r != spikeColor.r || playerColor.g != spikeColor.g || playerColor.b != spikeColor.b)
+            decreasedScore *= decreaseMultiply;
+
+        ScoreManager.Instance.DecreaseGameScore(decreasedScore);
+    }
 }

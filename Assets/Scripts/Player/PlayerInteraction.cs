@@ -5,7 +5,9 @@ using System;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    public static event Action<PlayerInteraction,IHitable> OnPlayerHitted;
     public static event Action<int> OnClosedDoor;
+
     [Header("Interact Settings")]
     [SerializeField] private KeyCode interactButton;
     private void OnTriggerEnter(Collider other)
@@ -21,6 +23,11 @@ public class PlayerInteraction : MonoBehaviour
             GameManager.StartNewPhase();
             OnClosedDoor?.Invoke(phaseStartTrigger.GetDoorID());
             Destroy(phaseStartTrigger.gameObject);
+        }
+
+        if(other.gameObject.TryGetComponent<IHitable>(out IHitable hitable))
+        {
+            OnPlayerHitted?.Invoke(this, hitable);
         }
     }
 

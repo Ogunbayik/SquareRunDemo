@@ -38,6 +38,10 @@ public class Consts
         public const string GAMEOVER_PARAMETER = "isGameover";
     }
 
+    public struct GhostAnimationParameter
+    {
+        public const string MOVING_PARAMETER = "isMove";
+    }
 
     
 }

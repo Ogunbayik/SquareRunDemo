@@ -81,6 +81,9 @@
     <Compile Include="Assets\Scripts\Environments\ColorfulGrounds.cs" />
     <Compile Include="Assets\Scripts\Environments\PhaseStartTrigger.cs" />
     <Compile Include="Assets\Scripts\Environments\Key.cs" />
+    <Compile Include="Assets\Scripts\Ghost.cs" />
+    <Compile Include="Assets\Scripts\GhostAnimationController.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\IHitable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
