@@ -171,4 +171,9 @@ public class Ghost : MonoBehaviour , IHitable
             isIncreasing = false;
         }
     }
+
+    public int GetDecreaseScore()
+    {
+        return decreaseScore;
+    }
 }

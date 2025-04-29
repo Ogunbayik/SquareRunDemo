@@ -63,10 +63,12 @@
     <Compile Include="Assets\Scripts\Player\PlayerGroundCheck.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IInteractable.cs" />
     <Compile Include="Assets\Scripts\Environments\Gem.cs" />
+    <Compile Include="Assets\Scripts\GhostAnimationController.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ICollectable.cs" />
     <Compile Include="Assets\Scripts\Managers\SpawnManager.cs" />
     <Compile Include="Assets\Scripts\Environments\Cabine.cs" />
     <Compile Include="Assets\Scripts\UI\HandleGameoverUI.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\IHitable.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Managers\ScoreManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
@@ -77,13 +79,12 @@
     <Compile Include="Assets\Scripts\Environments\Grounds.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInteraction.cs" />
     <Compile Include="Assets\Scripts\UI\HandleScoreUI.cs" />
+    <Compile Include="Assets\Scripts\Ghost.cs" />
     <Compile Include="Assets\Scripts\Managers\CameraManager.cs" />
     <Compile Include="Assets\Scripts\Environments\ColorfulGrounds.cs" />
     <Compile Include="Assets\Scripts\Environments\PhaseStartTrigger.cs" />
     <Compile Include="Assets\Scripts\Environments\Key.cs" />
-    <Compile Include="Assets\Scripts\Ghost.cs" />
-    <Compile Include="Assets\Scripts\GhostAnimationController.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\IHitable.cs" />
+    <Compile Include="Assets\Scripts\FloatingText.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

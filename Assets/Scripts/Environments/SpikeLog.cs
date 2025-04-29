@@ -86,4 +86,9 @@ public class SpikeLog : MonoBehaviour, IHitable
 
         ScoreManager.Instance.DecreaseGameScore(decreasedScore);
     }
+
+    public int GetDecreaseScore()
+    {
+        return decreasedScore;
+    }
 }

@@ -33,8 +33,6 @@ public class Consts
 
     public struct GameoverCanvasAnimationParameter
     {
-        public const string SHOWING_GOSCORE_PARAMETER = "isShowGOScore";
-        public const string RETURN_IDLE_GOSCORE_PARAMETER = "isReturnIdleGOScore";
         public const string GAMEOVER_PARAMETER = "isGameover";
     }
 

@@ -9,6 +9,8 @@ public class ScoreManager : MonoBehaviour
     public static event Action<int> OnGameScoreDecreased;
     public static event Action<int> OnGameScoreIncreased;
 
+    private PlayerInteraction playerInteraction;
+
     [Header("Timer Settings")]
     [SerializeField] private float countDownFirst;
     [SerializeField] private float countDownRepeat;
@@ -19,8 +21,11 @@ public class ScoreManager : MonoBehaviour
     [Header("Multiply Settings")]
     [SerializeField] private int multiplyBoost;
     [SerializeField] private int multiplyDecreased;
+    [SerializeField] private GameObject floatingText;
 
     public static int gameScore = 0;
+
+    private int increaseScore;
     private void Awake()
     {
         #region Singleton
@@ -31,6 +36,8 @@ public class ScoreManager : MonoBehaviour
         else
             Instance = this;
         #endregion
+
+        playerInteraction = GameObject.Find("Player").GetComponent<PlayerInteraction>();
     }
     private void Start()
     {
@@ -52,6 +59,8 @@ public class ScoreManager : MonoBehaviour
     {
         hitable.HitPlayer(player);
 
+        CreateFloationText(false, hitable.GetDecreaseScore(), player);
+
         CheckGameScore();
     }
     private void Gem_OnPlayerCollectGem(Gem gem, PlayerInteraction player)
@@ -59,9 +68,13 @@ public class ScoreManager : MonoBehaviour
         var playerMode = player.GetComponent<PlayerGroundCheck>().currentMode;
 
         if (playerMode == PlayerGroundCheck.PlayerMode.Boosted)
-            IncreaseGameScore(gem.GetGemScore() * multiplyBoost);
-        else if(playerMode == PlayerGroundCheck.PlayerMode.Decreased)
-            IncreaseGameScore(gem.GetGemScore() * multiplyDecreased);
+            increaseScore = gem.GetGemScore() * multiplyBoost;
+        else if (playerMode == PlayerGroundCheck.PlayerMode.Decreased)
+            increaseScore = gem.GetGemScore() * multiplyDecreased;
+
+        IncreaseGameScore(increaseScore);
+
+        CreateFloationText(true, increaseScore, player);
 
         CheckGameScore();
     }
@@ -75,14 +88,25 @@ public class ScoreManager : MonoBehaviour
         gameScore -= score;
         OnGameScoreDecreased?.Invoke(score);
     }
-    private void DecreaseGameScorePerMinutes()
+    private void DecreaseGameScorePerMinutes(PlayerInteraction player)
     {
         DecreaseGameScore(decreaseScore);
 
         if (maxGameoverScore <= gameScore)
             return;
 
+        CreateFloationText(false, decreaseScore, player);
+
         CheckGameScore();
+    }
+
+    private void CreateFloationText(bool isIncrease,int score,PlayerInteraction player)
+    {
+        var playerHeight = 2f;
+        var spawnPosition = new Vector3(player.transform.position.x, player.transform.position.y + playerHeight, player.transform.position.z);
+        var text = Instantiate(floatingText, player.transform);
+        text.transform.position = spawnPosition;
+        text.GetComponent<FloatingText>().SetFloatingText(isIncrease, score);
     }
     private void CheckGameScore()
     {

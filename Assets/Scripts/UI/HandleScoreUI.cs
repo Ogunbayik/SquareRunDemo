@@ -6,9 +6,11 @@ using TMPro;
 
 public class HandleScoreUI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI gameScoreText;
+    [Header("Gamebar Settings")]
     [SerializeField] private Image gameoverFill;
     [SerializeField] private Image gamepassFill;
+    [Header("Score Settings")]
+    [SerializeField] private TextMeshProUGUI gameScoreText;
     void Start()
     {
         SetScoreText(); 
