@@ -6,11 +6,18 @@ using TMPro;
 
 public class HandleScoreUI : MonoBehaviour
 {
+    private Animator animator;
+
     [Header("Gamebar Settings")]
     [SerializeField] private Image gameoverFill;
     [SerializeField] private Image gamepassFill;
     [Header("Score Settings")]
     [SerializeField] private TextMeshProUGUI gameScoreText;
+    [SerializeField] private TextMeshProUGUI decreasedText;
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
     void Start()
     {
         SetScoreText(); 
@@ -19,13 +26,23 @@ public class HandleScoreUI : MonoBehaviour
     }
     private void OnEnable()
     {
+        ScoreManager.OnScoreDecreasedPerMinutes += ScoreManager_OnScoreDecreasedPerMinutes;
         ScoreManager.OnGameScoreIncreased += ScoreManager_OnGameScoreIncreased;
         ScoreManager.OnGameScoreDecreased += ScoreManager_OnGameScoreDecreased;
+        GameManager.OnPlayerPassedPhase += GameManager_OnPlayerPassedPhase;
     }
+
+
     private void OnDisable()
     {
+        ScoreManager.OnScoreDecreasedPerMinutes -= ScoreManager_OnScoreDecreasedPerMinutes;
         ScoreManager.OnGameScoreIncreased -= ScoreManager_OnGameScoreIncreased;
         ScoreManager.OnGameScoreDecreased -= ScoreManager_OnGameScoreDecreased;
+        GameManager.OnPlayerPassedPhase -= GameManager_OnPlayerPassedPhase;
+    }
+    private void ScoreManager_OnScoreDecreasedPerMinutes()
+    {
+        ShowDecreaseText();
     }
     private void ScoreManager_OnGameScoreIncreased(int increaseScore)
     {
@@ -70,10 +87,25 @@ public class HandleScoreUI : MonoBehaviour
 
         SetScoreText();
     }
-
     private void SetScoreText()
     {
         gameScoreText.text = $"Score: {ScoreManager.gameScore}";
+    }
+    private void GameManager_OnPlayerPassedPhase()
+    {
+        ResetGamescore();
+    }
+    public void ResetGamescore()
+    {
+        gameoverFill.fillAmount = 0;
+        gamepassFill.fillAmount = 0;
+        ScoreManager.gameScore = 0;
+        SetScoreText();
+    }
+    private void ShowDecreaseText()
+    {
+        decreasedText.text = $"Gamescore Decreased";
+        animator.SetTrigger(Consts.GamescoreCanvasAnimationParameter.DECREASED_PARAMETER);
     }
 
 

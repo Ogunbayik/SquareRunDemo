@@ -5,9 +5,6 @@ using TMPro;
 
 public class HandleGameoverUI : MonoBehaviour
 {
-    [Header("Settings")]
-    [SerializeField] private TextMeshProUGUI updateGOScoreText;
-
     private Animator animator;
     private void Awake()
     {

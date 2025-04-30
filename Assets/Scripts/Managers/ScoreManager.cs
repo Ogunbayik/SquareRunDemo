@@ -6,10 +6,11 @@ public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
 
+    public GameObject gameCamera;
+
+    public static event Action OnScoreDecreasedPerMinutes;
     public static event Action<int> OnGameScoreDecreased;
     public static event Action<int> OnGameScoreIncreased;
-
-    private PlayerInteraction playerInteraction;
 
     [Header("Timer Settings")]
     [SerializeField] private float countDownFirst;
@@ -21,6 +22,7 @@ public class ScoreManager : MonoBehaviour
     [Header("Multiply Settings")]
     [SerializeField] private int multiplyBoost;
     [SerializeField] private int multiplyDecreased;
+    [Header("Prefab Settings")]
     [SerializeField] private GameObject floatingText;
 
     public static int gameScore = 0;
@@ -36,12 +38,10 @@ public class ScoreManager : MonoBehaviour
         else
             Instance = this;
         #endregion
-
-        playerInteraction = GameObject.Find("Player").GetComponent<PlayerInteraction>();
     }
     private void Start()
     {
-        //GAME OVER ÝÇÝN SAYAÇ EKLE.
+        //GAME OVER ÝÇÝN SAYAÇ EKLE
         InvokeRepeating(nameof(DecreaseGameScorePerMinutes), countDownFirst, countDownRepeat);
     }
     private void OnEnable()
@@ -88,14 +88,14 @@ public class ScoreManager : MonoBehaviour
         gameScore -= score;
         OnGameScoreDecreased?.Invoke(score);
     }
-    private void DecreaseGameScorePerMinutes(PlayerInteraction player)
+    private void DecreaseGameScorePerMinutes()
     {
+        OnScoreDecreasedPerMinutes?.Invoke();
+
         DecreaseGameScore(decreaseScore);
 
         if (maxGameoverScore <= gameScore)
             return;
-
-        CreateFloationText(false, decreaseScore, player);
 
         CheckGameScore();
     }
@@ -106,6 +106,7 @@ public class ScoreManager : MonoBehaviour
         var spawnPosition = new Vector3(player.transform.position.x, player.transform.position.y + playerHeight, player.transform.position.z);
         var text = Instantiate(floatingText, player.transform);
         text.transform.position = spawnPosition;
+        text.transform.Rotate(gameCamera.transform.rotation.eulerAngles);
         text.GetComponent<FloatingText>().SetFloatingText(isIncrease, score);
     }
     private void CheckGameScore()

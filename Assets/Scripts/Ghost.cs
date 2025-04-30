@@ -21,6 +21,7 @@ public class Ghost : MonoBehaviour , IHitable
     [SerializeField] private float movementSpeed;
     [SerializeField] private float minimumRange;
     [SerializeField] private float maximumRange;
+    [SerializeField] private float minWaitingTime;
     [SerializeField] private float maxWaitingTime;
     [Header("Scale Settings")]
     [SerializeField] private float increaseSpeed;
@@ -72,6 +73,7 @@ public class Ghost : MonoBehaviour , IHitable
             case GhostStates.Move:
                 transform.position = Vector3.MoveTowards(transform.position, movementPosition, movementSpeed * Time.deltaTime);
 
+                transform.LookAt(movementPosition);
                 CheckMovementDistance();
                 break;
         }
@@ -87,9 +89,14 @@ public class Ghost : MonoBehaviour , IHitable
             else
                 movementPosition = minimumPosition;
 
-            waitingTimer = maxWaitingTime;
+            waitingTimer = GetRandomWaitingTime();
             isMove = true;
         }
+    }
+    private float GetRandomWaitingTime()
+    {
+        var randomWaitingTime = UnityEngine.Random.Range(minWaitingTime, maxWaitingTime);
+        return randomWaitingTime;
     }
     private void CheckMovementDistance()
     {

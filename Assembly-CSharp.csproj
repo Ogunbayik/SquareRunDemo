@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\Managers\SpawnManager.cs" />
     <Compile Include="Assets\Scripts\Environments\Cabine.cs" />
     <Compile Include="Assets\Scripts\UI\HandleGameoverUI.cs" />
+    <Compile Include="Assets\Scripts\FloatingText.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IHitable.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Managers\ScoreManager.cs" />
@@ -84,7 +85,6 @@
     <Compile Include="Assets\Scripts\Environments\ColorfulGrounds.cs" />
     <Compile Include="Assets\Scripts\Environments\PhaseStartTrigger.cs" />
     <Compile Include="Assets\Scripts\Environments\Key.cs" />
-    <Compile Include="Assets\Scripts\FloatingText.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

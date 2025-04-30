@@ -35,6 +35,11 @@ public class Consts
     {
         public const string GAMEOVER_PARAMETER = "isGameover";
     }
+    
+    public struct GamescoreCanvasAnimationParameter
+    {
+        public const string DECREASED_PARAMETER = "Decreased";
+    }
 
     public struct GhostAnimationParameter
     {

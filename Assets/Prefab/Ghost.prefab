@@ -691,7 +691,8 @@ MonoBehaviour:
   movementSpeed: 1
   minimumRange: 1
   maximumRange: 2
-  maxWaitingTime: 3
+  minWaitingTime: 1
+  maxWaitingTime: 4
   increaseSpeed: 0.5
   increaseSize: {x: 0.3, y: 0.3, z: 0.3}
   maxGhostSize: {x: 0, y: 0, z: 0}
