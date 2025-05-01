@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
         ThirdPhase,
         LastPhase
     }
+
     [Header("Game Settings")]
     public GamePhase currentPhase;
     public GameStates currentState;
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float delayNextState;
     [Header("Rotation Settings")]
     [SerializeField] private int spikeRotationY;
+    [SerializeField] private List<Transform> phaseObjectsList = new List<Transform>();
 
     private int phaseIndex;
 
@@ -60,6 +62,8 @@ public class GameManager : MonoBehaviour
         #endregion
 
         playerController = GameObject.FindObjectOfType<PlayerController>();
+        FindAllPhase();
+        SetActivatePhaseObjects();
     }
     void Start()
     {
@@ -95,8 +99,9 @@ public class GameManager : MonoBehaviour
     }
     private void PlayerController_OnPlayerTeleportNextPhase()
     {
-        ChangeState(GameStates.GameStart);
         SetNextPhase();
+        ChangeState(GameStates.GameStart);
+        SetActivatePhaseObjects();
     }
 
     public static void StartNewPhase()
@@ -158,6 +163,26 @@ public class GameManager : MonoBehaviour
                 currentPhase = GamePhase.LastPhase;
                 playerController.SetPlayerDirection(new Vector3(-verticalInput, 0f, horizontalInput));
                 break;
+        }
+    }
+    private void FindAllPhase()
+    {
+        var phaseObj = GameObject.Find("PhaseObjects").transform;
+        var childrenCount = phaseObj.transform.childCount;
+
+        for (int i = 0; i < childrenCount; i++)
+        {
+            phaseObjectsList.Add(phaseObj.transform.GetChild(i));
+        }
+    }
+    private void SetActivatePhaseObjects()
+    {
+        for (int i = 0; i < phaseObjectsList.Count; i++)
+        {
+            if (phaseIndex == i)
+                phaseObjectsList[i].gameObject.SetActive(true);
+            else
+                phaseObjectsList[i].gameObject.SetActive(false);
         }
     }
     private void SetNextPhase()
