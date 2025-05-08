@@ -20,16 +20,16 @@ public class Door : MonoBehaviour
         Key.OnPlayerCollectedKey += Key_OnPlayerCollectedKey;
         PlayerInteraction.OnClosedDoor += PlayerInteraction_OnClosedDoor;
     }
+    private void OnDisable()
+    {
+        Key.OnPlayerCollectedKey -= Key_OnPlayerCollectedKey;
+        PlayerInteraction.OnClosedDoor -= PlayerInteraction_OnClosedDoor;
+    }
 
     private void PlayerInteraction_OnClosedDoor(int triggerID)
     {
         if (triggerID == doorID)
             CloseDoor();
-    }
-
-    private void OnDisable()
-    {
-        Key.OnPlayerCollectedKey -= Key_OnPlayerCollectedKey;
     }
     private void Key_OnPlayerCollectedKey(Key key)
     {

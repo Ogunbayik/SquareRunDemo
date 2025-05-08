@@ -21,7 +21,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             
             GameManager.StartNewPhase();
-            OnClosedDoor?.Invoke(phaseStartTrigger.GetDoorID());
+            ClosedTheDoor(phaseStartTrigger);
             Destroy(phaseStartTrigger.gameObject);
         }
 
@@ -41,5 +41,10 @@ public class PlayerInteraction : MonoBehaviour
             }
 
         }
+    }
+
+    public void ClosedTheDoor(PhaseStartTrigger phaseTrigger)
+    {
+        OnClosedDoor?.Invoke(phaseTrigger.GetDoorID());
     }
 }
